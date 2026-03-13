@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0B3D6B">
+<title>PoolPro — 14,000 gal | Dallas, TX</title>
+<style>
+/* ═══════ RESET & ROOT ═══════ */
+:root {
+  --blue: #0B3D6B;
+  --blue-mid: #1565A8;
+  --blue-light: #DCEEFB;
+  --blue-pale: #F0F7FD;
+  --teal: #0D7363;
+  --teal-light: #D2F5EC;
+  --amber: #9A6700;
+  --amber-light: #FFF8E1;
+  --red: #C0392B;
+  --red-light: #FDEDEB;
+  --green: #1E8449;
+  --green-light: #E8F8F0;
+  --white: #FFFFFF;
+  --dark: #1A2332;
+  --gray-900: #2C3E50;
+  --gray-600: #6B7B8D;
+  --gray-400: #A0AEC0;
+  --gray-200: #E2E8F0;
+  --gray-100: #F1F5F9;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  --r: 14px;
+  --r-sm: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,.08);
+  --nav-h: 68px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  --transition: .25s cubic-bezier(.4,0,.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  font-size: 15px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  font-family: var(--font);
+  background: var(--gray-100);
+  color: var(--dark);
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-top: var(--safe-t);
+}
+
+/* ═══════ APP SHELL ═══════ */
+.app {
+  max-width: 540px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(var(--nav-h) + var(--safe-b) + 8px);
+}
+
+/* ═══════ HEADER ═══════ */
+.hdr {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 60%, var(--teal) 100%);
+  color: var(--white);
+  padding: 1rem 1.2rem .9rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.hdr-top { display: flex; justify-content: space-between; align-items: center; }
+.hdr h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -.03em; }
+.hdr-sub { font-size: .72rem; opacity: .75; margin-top: 1px; letter-spacing: .02em; }
+.hdr-actions { display: flex; gap: .35rem; align-items: center; }
+.hdr-btn {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background var(--transition);
+  position: relative;
+}
+.hdr-btn:active { background: rgba(255,255,255,.3); }
+.sync-dot {
+  position: absolute; top: 2px; right: 2px;
+  width: 10px; height: 10px;
+  background: #E74C3C;
+  border-radius: 50%;
+  border: 2px solid var(--blue);
+  display: none;
+}
+.sync-dot.show { display: block; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.3); } }
+
+/* ═══════ BOTTOM NAV ═══════ */
+.bnav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: calc(var(--nav-h) + var(--safe-b));
+  background: var(--white);
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 8px;
+  padding-bottom: var(--safe-b);
+  z-index: 100;
+  box-shadow: 0 -2px 12px rgba(0,0,0,.06);
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px;
+  background: none; border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  min-width: 56px;
+  padding: 4px 8px;
+  transition: color var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--font);
+}
+.nav-item.active { color: var(--blue); }
+.nav-icon { font-size: 1.35rem; line-height: 1; }
+.nav-label { font-size: .65rem; font-weight: 600; letter-spacing: .02em; }
+.nav-item.active .nav-icon { transform: scale(1.1); }
+
+/* ═══════ CONTENT ═══════ */
+.content { flex: 1; padding: .8rem; }
+.pane { display: none; }
+.pane.active { display: block; animation: slideUp .3s ease-out; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════ CARDS ═══════ */
+.card {
+  background: var(--white);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: .7rem;
+}
+.card-header {
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: .7rem;
+}
+.card-icon { font-size: 1.2rem; }
+.card-title { font-size: .95rem; font-weight: 700; color: var(--dark); }
+.card-subtitle { font-size: .72rem; color: var(--gray-600); }
+
+/* ═══════ CHEMISTRY DASHBOARD ═══════ */
+.chem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: .7rem; }
+.chem-card {
+  background: var(--white);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  padding: .65rem .4rem;
+  text-align: center;
+  border-left: 3px solid var(--gray-200);
+  transition: border-color var(--transition), transform var(--transition);
+}
+.chem-card:active { transform: scale(.97); }
+.chem-card.good { border-left-color: var(--green); }
+.chem-card.low, .chem-card.high { border-left-color: var(--amber); }
+.chem-card.danger { border-left-color: var(--red); }
+.cc-label { font-size: .6rem; text-transform: uppercase; font-weight: 700; color: var(--gray-600); letter-spacing: .05em; }
+.cc-val { font-size: 1.35rem; font-weight: 800; margin: .1rem 0; color: var(--dark); }
+.cc-range { font-size: .6rem; color: var(--gray-400); }
+.cc-badge {
+  display: inline-block; font-size: .55rem; font-weight: 700;
+  padding: 2px 6px; border-radius: 4px; margin-top: .15rem; text-transform: uppercase;
+}
+.cc-badge.good { background: var(--green-light); color: var(--green); }
+.cc-badge.low, .cc-badge.high { background: var(--amber-light); color: var(--amber); }
+.cc-badge.danger { background: var(--red-light); color: var(--red); }
+
+/* ═══════ STATUS CHIPS ═══════ */
+.status-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .7rem; }
+.stat-chip {
+  background: var(--white);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  padding: .6rem .7rem;
+  flex: 1; min-width: 100px;
+  display: flex; align-items: center; gap: .45rem;
+}
+.stat-chip .icon { font-size: 1.15rem; }
+.stat-chip .label { font-size: .62rem; color: var(--gray-600); text-transform: uppercase; font-weight: 600; }
+.stat-chip .val { font-size: .9rem; font-weight: 700; }
+
+/* ═══════ QUICK ACTIONS ═══════ */
+.quick-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .7rem; }
+.quick-btn {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .75rem .8rem;
+  border-radius: var(--r-sm);
+  border: none; cursor: pointer;
+  font-family: var(--font); font-size: .85rem; font-weight: 600;
+  transition: all var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+.quick-btn:active { transform: scale(.97); }
+.quick-btn.primary { background: linear-gradient(135deg, var(--blue), var(--teal)); color: white; }
+.quick-btn.secondary { background: var(--blue-light); color: var(--blue); }
+
+/* ═══════ BUTTONS ═══════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .65rem 1.2rem; border: none; border-radius: var(--r-sm);
+  cursor: pointer; font-family: var(--font); font-size: .88rem; font-weight: 600;
+  transition: all var(--transition); -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary { background: linear-gradient(135deg, var(--blue), var(--teal)); color: white; }
+.btn-secondary { background: var(--blue-light); color: var(--blue); }
+.btn-danger { background: var(--red-light); color: var(--red); }
+.btn-sm { padding: .4rem .75rem; font-size: .8rem; min-height: 36px; }
+.btn-block { width: 100%; }
+
+/* ═══════ FORMS ═══════ */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: .55rem; margin-bottom: .6rem; }
+.fg { display: flex; flex-direction: column; }
+.fg label { font-size: .72rem; font-weight: 600; margin-bottom: .2rem; color: var(--gray-900); }
+.fg input, .fg select, .fg textarea {
+  padding: .55rem .65rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--r-sm);
+  font-family: var(--font); font-size: 1rem;
+  transition: border-color var(--transition);
+  background: var(--white);
+  min-height: 44px;
+  -webkit-appearance: none;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  outline: none;
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 0 3px rgba(21,101,168,.12);
+}
+.fg-full { grid-column: 1 / -1; }
+
+/* ═══════ FILTER PILLS ═══════ */
+.pills { display: flex; gap: .3rem; flex-wrap: wrap; margin-bottom: .7rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.pill {
+  padding: .4rem .75rem; border: 2px solid var(--gray-200);
+  background: var(--white); border-radius: 20px; cursor: pointer;
+  font-family: var(--font); font-size: .78rem; font-weight: 600; color: var(--gray-600);
+  transition: all var(--transition); white-space: nowrap; min-height: 36px;
+  display: flex; align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+/* ═══════ CHECKLIST ═══════ */
+.cl-item {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .7rem .75rem;
+  background: var(--white);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  margin-bottom: .4rem;
+  transition: opacity var(--transition), background var(--transition);
+  min-height: 48px;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+.cl-item:active { background: var(--gray-100); }
+.cl-item.done { opacity: .45; }
+.cl-check {
+  width: 22px; height: 22px;
+  border-radius: 6px; border: 2px solid var(--gray-400);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all var(--transition);
+  font-size: .7rem; color: transparent;
+}
+.cl-item.done .cl-check {
+  background: var(--green); border-color: var(--green); color: white;
+}
+.cl-text { flex: 1; font-size: .85rem; line-height: 1.35; }
+.cl-item.done .cl-text { text-decoration: line-through; color: var(--gray-400); }
+.cl-freq {
+  font-size: .6rem; font-weight: 700; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+}
+.cl-freq.daily { background: var(--teal-light); color: var(--teal); }
+.cl-freq.weekly { background: var(--blue-light); color: var(--blue); }
+.cl-freq.monthly { background: var(--amber-light); color: var(--amber); }
+.cl-freq.seasonal { background: var(--red-light); color: var(--red); }
+.cl-progress { display: flex; align-items: center; gap: .6rem; margin-bottom: .7rem; }
+.cl-bar { flex: 1; height: 6px; background: var(--gray-200); border-radius: 3px; overflow: hidden; }
+.cl-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--green)); border-radius: 3px; transition: width .5s ease-out; }
+.cl-pct { font-size: .82rem; font-weight: 700; color: var(--teal); min-width: 40px; text-align: right; }
+
+/* ═══════ TAYLOR K-2005 TEST GUIDE ═══════ */
+.test-card {
+  background: var(--white);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: .6rem;
+  transition: all var(--transition);
+}
+.test-card-header {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .75rem .85rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 52px;
+}
+.test-card-header:active { background: var(--gray-100); }
+.test-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.test-name { flex: 1; font-size: .9rem; font-weight: 600; }
+.test-reagents { font-size: .65rem; color: var(--gray-600); }
+.test-chevron { font-size: .8rem; color: var(--gray-400); transition: transform var(--transition); }
+.test-card.open .test-chevron { transform: rotate(90deg); }
+.test-body { display: none; padding: 0 .85rem .85rem; }
+.test-card.open .test-body { display: block; animation: slideUp .25s ease-out; }
+.test-step {
+  display: flex; gap: .5rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: .82rem; line-height: 1.45;
+}
+.test-step:last-child { border-bottom: none; }
+.step-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--blue-light); color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 700; flex-shrink: 0;
+}
+.step-text { flex: 1; }
+.step-text strong { color: var(--blue); }
+.reagent-tag {
+  display: inline-block; font-size: .65rem; font-weight: 700;
+  background: var(--gray-100); color: var(--gray-600);
+  padding: 1px 5px; border-radius: 3px; margin: 0 1px;
+}
+
+/* ═══════ DROP COUNTER ═══════ */
+.drop-counter {
+  display: flex; align-items: center; gap: .6rem;
+  background: var(--blue-pale);
+  border-radius: var(--r-sm);
+  padding: .65rem .8rem;
+  margin: .5rem 0;
+}
+.drop-counter .label { font-size: .78rem; font-weight: 600; flex: 1; }
+.drop-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: none; cursor: pointer;
+  font-size: 1.2rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+.drop-btn:active { transform: scale(.9); }
+.drop-btn.minus { background: var(--red-light); color: var(--red); }
+.drop-btn.plus { background: var(--green-light); color: var(--green); }
+.drop-val {
+  font-size: 1.4rem; font-weight: 800; color: var(--blue);
+  min-width: 36px; text-align: center;
+}
+.drop-result {
+  background: var(--teal-light);
+  border-left: 3px solid var(--teal);
+  padding: .5rem .7rem;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: .85rem; font-weight: 600;
+  margin-top: .4rem;
+}
+
+/* ═══════ CALC RESULTS ═══════ */
+.calc-result {
+  padding: .6rem .75rem;
+  background: var(--blue-pale);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  margin: .35rem 0; font-size: .85rem;
+}
+.calc-result strong { color: var(--dark); }
+.calc-result .dose { font-weight: 800; color: var(--blue); font-size: .95rem; }
+.calc-result.needs-lower { border-left-color: var(--amber); background: var(--amber-light); }
+.calc-result.needs-lower .dose { color: var(--amber); }
+.calc-result.ok { border-left-color: var(--green); background: var(--green-light); }
+.calc-result.ok .dose { color: var(--green); }
+.calc-note {
+  background: var(--teal-light); border-left: 3px solid var(--teal);
+  padding: .5rem .7rem; border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: .8rem; margin-top: .5rem;
+}
+.calc-warn {
+  background: var(--amber-light); border-left: 3px solid var(--amber);
+  padding: .5rem .7rem; border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: .8rem; margin-top: .5rem;
+}
+
+/* ═══════ LOG ENTRIES ═══════ */
+.log-entry {
+  background: var(--white);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: .75rem;
+  margin-bottom: .55rem;
+  border-left: 3px solid var(--blue-light);
+}
+.log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .4rem; }
+.log-date { font-weight: 700; color: var(--blue); font-size: .85rem; }
+.log-delete {
+  background: none; border: none; color: var(--gray-400); cursor: pointer;
+  font-size: 1rem; padding: 4px; min-width: 32px; min-height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.log-readings { display: grid; grid-template-columns: repeat(auto-fit, minmax(75px, 1fr)); gap: .3rem; margin: .35rem 0; }
+.log-r {
+  background: var(--gray-100); padding: .25rem .35rem; border-radius: 6px; text-align: center;
+}
+.log-r.good { background: var(--green-light); }
+.log-r.low, .log-r.high { background: var(--amber-light); }
+.log-r.danger { background: var(--red-light); }
+.log-r-label { font-size: .58rem; font-weight: 700; color: var(--gray-600); text-transform: uppercase; }
+.log-r-val { font-size: .88rem; font-weight: 700; }
+.log-chem { font-size: .8rem; color: var(--dark); margin-top: .3rem; }
+.log-notes { font-size: .78rem; color: var(--gray-600); font-style: italic; margin-top: .25rem; padding: .35rem; background: var(--gray-100); border-radius: 6px; }
+.log-sync-tag {
+  display: inline-block; font-size: .55rem; font-weight: 700; text-transform: uppercase;
+  padding: 2px 5px; border-radius: 3px; margin-left: .3rem;
+}
+.log-sync-tag.synced { background: var(--green-light); color: var(--green); }
+.log-sync-tag.pending { background: var(--amber-light); color: var(--amber); }
+
+/* ═══════ SCHEDULE / SEASON ═══════ */
+.season-banner {
+  border-radius: var(--r); padding: .9rem; margin-bottom: .7rem; border-left: 4px solid;
+}
+.season-banner.spring { background: linear-gradient(135deg, #eafaf1, #d5f5e3); border-color: var(--green); }
+.season-banner.summer { background: linear-gradient(135deg, #fef9e7, #fdebd0); border-color: #E67E22; }
+.season-banner.fall { background: linear-gradient(135deg, #fae5d3, #f6ddcc); border-color: #CA6F1E; }
+.season-banner.winter { background: linear-gradient(135deg, #d6eaf8, #ebf5fb); border-color: var(--blue); }
+.season-banner h2 { margin: 0 0 .25rem; font-size: 1rem; }
+.season-banner p { font-size: .82rem; color: var(--dark); margin: .1rem 0; }
+.season-tasks { list-style: none; margin-top: .5rem; }
+.season-tasks li {
+  padding: .5rem .6rem; border-bottom: 1px solid rgba(0,0,0,.06);
+  font-size: .82rem; display: flex; align-items: flex-start; gap: .35rem;
+}
+.season-tasks li:last-child { border-bottom: none; }
+.season-tasks li::before { content: '\2022'; color: var(--teal); font-weight: 800; flex-shrink: 0; }
+
+/* ═══════ MODAL ═══════ */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: none; align-items: flex-end; justify-content: center;
+  z-index: 200;
+  padding: 0;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--white);
+  border-radius: 20px 20px 0 0;
+  padding: 1.2rem 1.2rem calc(1.2rem + var(--safe-b));
+  max-width: 540px; width: 100%;
+  max-height: 85vh; max-height: 85dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 -8px 40px rgba(0,0,0,.15);
+  animation: sheetUp .3s ease-out;
+}
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle {
+  width: 36px; height: 4px; background: var(--gray-200);
+  border-radius: 2px; margin: 0 auto .8rem;
+}
+.modal h2 { margin-bottom: .7rem; color: var(--blue); font-size: 1.05rem; }
+.modal-actions { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .8rem; }
+
+/* ═══════ EMPTY STATE ═══════ */
+.empty { text-align: center; padding: 2.5rem 1rem; color: var(--gray-400); }
+.empty-icon { font-size: 2.5rem; margin-bottom: .4rem; }
+
+/* ═══════ SECTION DIVIDER ═══════ */
+.section-label {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  color: var(--gray-400); letter-spacing: .08em;
+  padding: .5rem 0 .3rem;
+}
+
+/* ═══════ REAGENT TRACKER ═══════ */
+.reagent-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .4rem; }
+.reagent-item {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .5rem .6rem;
+  background: var(--gray-100);
+  border-radius: var(--r-sm);
+  font-size: .78rem;
+}
+.reagent-bar { flex: 1; height: 4px; background: var(--gray-200); border-radius: 2px; overflow: hidden; }
+.reagent-fill { height: 100%; border-radius: 2px; transition: width .4s; }
+.reagent-fill.ok { background: var(--green); }
+.reagent-fill.low { background: var(--amber); }
+.reagent-fill.empty { background: var(--red); }
+
+/* ═══════ RESPONSIVE ═══════ */
+@media (max-width: 380px) {
+  .chem-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: 1fr; }
+  .quick-row { grid-template-columns: 1fr; }
+}
+@media (min-width: 600px) {
+  .chem-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══════ HEADER ═══════ -->
+<header class="hdr">
+  <div class="hdr-top">
+    <div>
+      <h1>PoolPro</h1>
+      <div class="hdr-sub">14,000 gal &bull; Chlorine + Cartridge &bull; Dallas, TX</div>
+    </div>
+    <div class="hdr-actions">
+      <button class="hdr-btn" onclick="Sync.showSettings()" title="Sync" id="sync-btn">
+        &#9729;<span class="sync-dot" id="sync-dot"></span>
+      </button>
+      <button class="hdr-btn" onclick="App.showMenu()" title="More">&#8943;</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════ CONTENT ═══════ -->
+<main class="content">
+
+  <!-- DASHBOARD -->
+  <section id="pane-dashboard" class="pane active">
+    <div id="dash-status" class="status-row"></div>
+    <div id="dash-chem" class="chem-grid"></div>
+    <div class="quick-row">
+      <button class="quick-btn primary" onclick="App.switchTab('test')">&#128167; Run Test</button>
+      <button class="quick-btn secondary" onclick="App.switchTab('log')">&#128221; Log Results</button>
+    </div>
+    <div id="dash-alerts" class="card" style="display:none"></div>
+    <div class="section-label">Quick Access</div>
+    <div class="quick-row">
+      <button class="quick-btn secondary" onclick="App.switchTab('calc')">&#9878; Calculator</button>
+      <button class="quick-btn secondary" onclick="App.switchTab('schedule')">&#9788; Schedule</button>
+    </div>
+  </section>
+
+  <!-- TAYLOR K-2005 TEST GUIDE -->
+  <section id="pane-test" class="pane">
+    <div class="card" style="border-left:3px solid var(--blue)">
+      <div class="card-header">
+        <span class="card-icon">&#128300;</span>
+        <div>
+          <div class="card-title">Taylor K-2005 Test Guide</div>
+          <div class="card-subtitle">Tap a test for step-by-step instructions</div>
+        </div>
+      </div>
+    </div>
+    <div id="test-guide-list"></div>
+    <div class="section-label" style="margin-top:.5rem">Reagent Inventory</div>
+    <div class="card">
+      <div id="reagent-tracker"></div>
+      <button class="btn btn-secondary btn-sm btn-block" style="margin-top:.5rem" onclick="Taylor.resetReagents()">Reset All to Full</button>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section id="pane-checklist" class="pane">
+    <div class="cl-progress" id="cl-progress"></div>
+    <div class="pills" id="cl-pills"></div>
+    <div id="cl-list"></div>
+    <button class="btn btn-danger btn-sm" style="margin-top:.5rem" onclick="Checklist.resetAll()">Reset Checklist</button>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section id="pane-calc" class="pane">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">&#9878;</span>
+        <div>
+          <div class="card-title">Dosing Calculator</div>
+          <div class="card-subtitle">Calibrated for 14,000 gallons</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg"><label>Free Chlorine (ppm)</label><input type="number" id="c-fc" step="0.1" min="0" max="20" oninput="Calc.update()" inputmode="decimal"></div>
+        <div class="fg"><label>Target FC (ppm)</label><input type="number" id="c-fc-target" value="3" step="0.5" min="1" max="30" oninput="Calc.update()" inputmode="decimal"></div>
+        <div class="fg"><label>pH</label><input type="number" id="c-ph" step="0.1" min="6" max="9" oninput="Calc.update()" inputmode="decimal"></div>
+        <div class="fg"><label>Total Alk (ppm)</label><input type="number" id="c-ta" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
+        <div class="fg"><label>Calcium Hard (ppm)</label><input type="number" id="c-ch" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
+        <div class="fg"><label>CYA (ppm)</label><input type="number" id="c-cya" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="Calc.loadLast()">Load Last Test</button>
+    </div>
+    <div id="calc-results"></div>
+  </section>
+
+  <!-- LOG -->
+  <section id="pane-log" class="pane">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">&#128221;</span>
+        <div>
+          <div class="card-title">Log Test Results</div>
+          <div class="card-subtitle">Record your Taylor K-2005 readings</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg"><label>Date</label><input type="date" id="l-date"></div>
+        <div class="fg"><label>Time</label>
+          <select id="l-time">
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+          </select>
+        </div>
+        <div class="fg"><label>Free Chlorine</label><input type="number" id="l-fc" step="0.2" min="0" placeholder="ppm" inputmode="decimal"></div>
+        <div class="fg"><label>Combined Cl</label><input type="number" id="l-cc" step="0.1" min="0" placeholder="ppm" inputmode="decimal"></div>
+        <div class="fg"><label>pH</label><input type="number" id="l-ph" step="0.1" min="6" max="9" placeholder="7.0-8.0" inputmode="decimal"></div>
+        <div class="fg"><label>Total Alk</label><input type="number" id="l-ta" step="10" min="0" placeholder="ppm" inputmode="decimal"></div>
+        <div class="fg"><label>Calcium Hard</label><input type="number" id="l-ch" step="10" min="0" placeholder="ppm" inputmode="decimal"></div>
+        <div class="fg"><label>CYA</label><input type="number" id="l-cya" step="1" min="0" placeholder="ppm" inputmode="decimal"></div>
+        <div class="fg fg-full"><label>Notes</label><textarea id="l-notes" rows="2" placeholder="Water appearance, chemicals added, weather..."></textarea></div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="Log.add()">Save Reading</button>
+    </div>
+    <div class="section-label">History</div>
+    <div class="pills" id="log-pills" style="margin-bottom:.5rem"></div>
+    <div id="log-list"></div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section id="pane-schedule" class="pane">
+    <div id="schedule-content"></div>
+  </section>
+
+</main>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="nav-item active" data-tab="dashboard"><span class="nav-icon">&#9673;</span><span class="nav-label">Home</span></button>
+  <button class="nav-item" data-tab="test"><span class="nav-icon">&#128167;</span><span class="nav-label">Test</span></button>
+  <button class="nav-item" data-tab="checklist"><span class="nav-icon">&#9745;</span><span class="nav-label">Tasks</span></button>
+  <button class="nav-item" data-tab="log"><span class="nav-icon">&#128221;</span><span class="nav-label">Log</span></button>
+  <button class="nav-item" data-tab="calc"><span class="nav-icon">&#9878;</span><span class="nav-label">Calc</span></button>
+</nav>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="App.importData(event)">
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   TARGETS & HELPERS
+   ═══════════════════════════════════════════════════════════ */
+const TARGETS = {
+  fc:  { min:2, max:4, danger:10, label:'Free Cl', unit:'ppm' },
+  cc:  { min:0, max:0.5, danger:1, label:'Combined Cl', unit:'ppm' },
+  ph:  { min:7.2, max:7.6, danger:8.0, label:'pH', unit:'' },
+  ta:  { min:80, max:120, danger:180, label:'Total Alk', unit:'ppm' },
+  ch:  { min:200, max:400, danger:600, label:'Calcium', unit:'ppm' },
+  cya: { min:30, max:50, danger:90, label:'CYA', unit:'ppm' }
+};
+
+function status(val, key) {
+  if (val == null || val === '') return '';
+  const t = TARGETS[key];
+  if (t.danger && val >= t.danger) return 'danger';
+  if (val < t.min) return 'low';
+  if (val > t.max) return 'high';
+  return 'good';
+}
+function statusLabel(s) {
+  return { good:'Good', low:'Low', high:'High', danger:'Danger', '':'--' }[s] || '--';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DATA (localStorage with safe fallback)
+   ═══════════════════════════════════════════════════════════ */
+const Data = {
+  K_LOG:'pool_log', K_CL:'pool_checklist', K_SET:'pool_settings', K_RG:'pool_reagents',
+
+  _get(k, def) { try { return JSON.parse(localStorage.getItem(k)) || def; } catch(e) { return def; } },
+  _set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} },
+
+  getLogs() { return this._get(this.K_LOG, []); },
+  saveLogs(d) { this._set(this.K_LOG, d); },
+  addLog(entry) {
+    if (entry.synced === undefined) entry.synced = false;
+    const d = this.getLogs(); d.unshift(entry); this.saveLogs(d);
+  },
+  deleteLog(id) { this.saveLogs(this.getLogs().filter(e => e.id !== id)); },
+  getUnsynced() { return this.getLogs().filter(e => !e.synced); },
+  markSynced(ids) {
+    const idSet = new Set(ids);
+    this.saveLogs(this.getLogs().map(e => idSet.has(e.id) ? {...e, synced:true} : e));
+  },
+
+  getCL() { return this._get(this.K_CL, {}); },
+  saveCL(d) { this._set(this.K_CL, d); },
+
+  getSettings() { return this._get(this.K_SET, {}); },
+  saveSettings(s) { this._set(this.K_SET, s); },
+
+  getReagents() { return this._get(this.K_RG, null); },
+  saveReagents(r) { this._set(this.K_RG, r); },
+
+  lastTest() { const l = this.getLogs(); return l.length ? l[0] : null; },
+  daysSince() {
+    const last = this.lastTest();
+    if (!last) return null;
+    const d = new Date(last.date);
+    const now = new Date(); now.setHours(0,0,0,0);
+    return Math.floor((now - d) / 86400000);
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   GOOGLE SHEETS SYNC
+   ═══════════════════════════════════════════════════════════ */
+const Sync = {
+  updateBadge() {
+    const count = Data.getUnsynced().length;
+    const dot = document.getElementById('sync-dot');
+    if (dot) dot.classList.toggle('show', count > 0);
+  },
+
+  async go() {
+    const settings = Data.getSettings();
+    const url = settings.sheetsUrl;
+    if (!url) { alert('No Apps Script URL saved.\n\nTap Sync and enter your URL.'); return; }
+    const unsynced = Data.getUnsynced();
+    if (!unsynced.length) { alert('All entries already synced.'); return; }
+    const btn = document.getElementById('do-sync-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Syncing...'; }
+    try {
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(unsynced),
+        mode: 'no-cors'
+      });
+      Data.markSynced(unsynced.map(e => e.id));
+      const now = new Date().toLocaleString();
+      const s = Data.getSettings();
+      s.lastSync = now;
+      s.lastSyncCount = unsynced.length;
+      Data.saveSettings(s);
+      this.updateBadge();
+      Dashboard.render();
+      this.showSettings();
+    } catch (err) {
+      alert('Sync failed: ' + err.message);
+      if (btn) { btn.disabled = false; btn.textContent = 'Sync Now'; }
+    }
+  },
+
+  showSettings() {
+    const s = Data.getSettings();
+    const unsynced = Data.getUnsynced().length;
+    const syncedCount = Data.getLogs().filter(e => e.synced).length;
+    let statusHtml = '';
+    if (s.lastSync) {
+      statusHtml = `<div class="calc-note" style="margin-bottom:.6rem">&#10003; Last: <strong>${s.lastSync}</strong> (${s.lastSyncCount||0} pushed)</div>`;
+    }
+    if (unsynced > 0) {
+      statusHtml += `<div class="calc-warn" style="margin-bottom:.6rem"><strong>${unsynced} unsynced</strong> waiting.</div>`;
+    } else if (s.lastSync) {
+      statusHtml += `<div class="calc-note" style="margin-bottom:.6rem;border-color:var(--green);background:var(--green-light)">&#10003; All ${syncedCount} synced.</div>`;
+    }
+    document.getElementById('modal-body').innerHTML = `
+      <h2>&#9729; Google Sheets Sync</h2>
+      ${statusHtml}
+      <div class="fg" style="margin-bottom:.6rem">
+        <label>Apps Script URL</label>
+        <input type="url" id="sheets-url-input" value="${s.sheetsUrl||''}"
+          placeholder="https://script.google.com/macros/s/.../exec"
+          style="width:100%">
+        <div style="font-size:.72rem;color:var(--gray-600);margin-top:.2rem">Paste URL from your Apps Script deployment.</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary btn-sm" onclick="Sync.closeModal()">Cancel</button>
+        <button class="btn btn-secondary btn-sm" onclick="Sync.saveUrl()">Save</button>
+        <button class="btn btn-primary btn-sm" id="do-sync-btn" onclick="Sync.go()" ${!s.sheetsUrl?'disabled':''}>
+          Sync ${unsynced > 0 ? '('+unsynced+')' : 'Now'}
+        </button>
+      </div>`;
+    document.getElementById('modal').classList.add('show');
+  },
+
+  saveUrl() {
+    const url = document.getElementById('sheets-url-input').value.trim();
+    if (url && !url.startsWith('https://script.google.com/macros/')) {
+      alert('URL should start with:\nhttps://script.google.com/macros/s/'); return;
+    }
+    const s = Data.getSettings(); s.sheetsUrl = url; Data.saveSettings(s);
+    this.showSettings();
+  },
+
+  closeModal() { document.getElementById('modal').classList.remove('show'); }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   TAYLOR K-2005 TEST GUIDE
+   ═══════════════════════════════════════════════════════════ */
+const K2005_TESTS = [
+  {
+    id: 'fc', name: 'Free Chlorine (DPD)', color: '#3498DB',
+    reagents: ['R-0001','R-0002'],
+    steps: [
+      'Rinse the small comparator tube with pool water, then fill to the <strong>9 mL</strong> mark.',
+      'Add <strong>5 drops</strong> of <span class="reagent-tag">R-0001</span> (DPD Reagent #1).',
+      'Add <strong>5 drops</strong> of <span class="reagent-tag">R-0002</span> (DPD Reagent #2).',
+      'Cap the tube and <strong>invert to mix</strong>. Water will turn pink if chlorine is present.',
+      'Place in comparator and <strong>match color</strong> to the FC standard. Read as <strong>ppm Free Chlorine</strong>.',
+    ],
+    tip: 'Read within 30 seconds — DPD fades over time. If color is off-scale (>5 ppm), dilute sample 1:1 with distilled water and multiply by 2.'
+  },
+  {
+    id: 'tc', name: 'Total / Combined Chlorine', color: '#8E44AD',
+    reagents: ['R-0003'],
+    steps: [
+      'Using the <strong>same sample</strong> from the Free Chlorine test (do NOT discard).',
+      'Add <strong>5 drops</strong> of <span class="reagent-tag">R-0003</span> (DPD Reagent #3).',
+      'Cap and <strong>invert to mix</strong>. If combined chlorine is present, the color will darken.',
+      'Match color to the TC standard. Record as <strong>ppm Total Chlorine</strong>.',
+      '<strong>Combined Chlorine = Total Chlorine &minus; Free Chlorine.</strong> Target: below 0.5 ppm.',
+    ],
+    tip: 'If CC > 0.5 ppm, consider shock treatment. CC causes the "chlorine smell" and eye irritation.'
+  },
+  {
+    id: 'ph', name: 'pH (Phenol Red)', color: '#E74C3C',
+    reagents: ['R-0004'],
+    steps: [
+      'Rinse and fill the <strong>large</strong> comparator tube to the 44 mL mark with pool water.',
+      'Add <strong>5 drops</strong> of <span class="reagent-tag">R-0004</span> (Phenol Red indicator).',
+      'Cap and <strong>invert to mix</strong>. Water will turn a shade of yellow to red.',
+      'Place in comparator and <strong>match color</strong> to the pH standard.',
+      'Record as <strong>pH</strong>. Target range: <strong>7.2 &ndash; 7.6</strong>.',
+    ],
+    tip: 'Always test pH before adding any chemicals. High FC (>10 ppm) can bleach the indicator — dilute or wait for chlorine to drop.'
+  },
+  {
+    id: 'ad', name: 'Acid Demand', color: '#E67E22',
+    reagents: ['R-0005'],
+    steps: [
+      'Use the <strong>same sample</strong> from the pH test (must show pH above 7.6).',
+      'Add <span class="reagent-tag">R-0005</span> (Acid Demand) <strong>one drop at a time</strong>.',
+      'Swirl after each drop. Count drops until color matches <strong>pH 7.4</strong> on the standard.',
+      'Look up your drop count on the <strong>Acid Demand chart</strong> to find required muriatic acid.',
+    ],
+    tip: 'Only run this test if pH is above 7.6. Use the Calculator tab for precise acid dosing.',
+    hasCounter: true, counterLabel: 'R-0005 drops to reach 7.4'
+  },
+  {
+    id: 'bd', name: 'Base Demand', color: '#16A085',
+    reagents: ['R-0006'],
+    steps: [
+      'Use the <strong>same sample</strong> from the pH test (must show pH below 7.2).',
+      'Add <span class="reagent-tag">R-0006</span> (Base Demand) <strong>one drop at a time</strong>.',
+      'Swirl after each drop. Count drops until color matches <strong>pH 7.4</strong> on the standard.',
+      'Look up your drop count on the <strong>Base Demand chart</strong> to find required soda ash.',
+    ],
+    tip: 'Only run this test if pH is below 7.2.',
+    hasCounter: true, counterLabel: 'R-0006 drops to reach 7.4'
+  },
+  {
+    id: 'ta', name: 'Total Alkalinity', color: '#2980B9',
+    reagents: ['R-0007','R-0008','R-0009'],
+    steps: [
+      'Rinse and fill the <strong>large tube</strong> to the 25 mL mark with pool water.',
+      'Add <strong>5 drops</strong> of <span class="reagent-tag">R-0007</span> (Thiosulfate) and swirl.',
+      'Add <strong>1 drop</strong> of <span class="reagent-tag">R-0008</span> (TA Indicator). Water should turn <strong>green</strong>.',
+      'Add <span class="reagent-tag">R-0009</span> (Sulfuric Acid) <strong>one drop at a time</strong>, swirling after each.',
+      'Count drops until color changes from <strong>green to red</strong>.',
+      '<strong>Multiply drops &times; 10</strong> = ppm Total Alkalinity. Target: 80&ndash;120 ppm.',
+    ],
+    tip: 'If the sample turns yellow-green at start, don\'t worry — keep adding R-0009 and count from drop 1.',
+    hasCounter: true, counterLabel: 'R-0009 drops (× 10 = ppm TA)', multiplier: 10, unit: 'ppm TA'
+  },
+  {
+    id: 'ch', name: 'Calcium Hardness', color: '#8E44AD',
+    reagents: ['R-0010','R-0011L','R-0012'],
+    steps: [
+      'Rinse and fill the <strong>large tube</strong> to the 25 mL mark with pool water.',
+      'Add <strong>20 drops</strong> of <span class="reagent-tag">R-0010</span> (Calcium Buffer) and swirl.',
+      'Add <strong>5 drops</strong> of <span class="reagent-tag">R-0011L</span> (Calcium Indicator). Water turns <strong>red</strong> if calcium is present.',
+      'Add <span class="reagent-tag">R-0012</span> (Hardness Reagent) <strong>one drop at a time</strong>, swirling after each.',
+      'Count drops until color changes from <strong>red to blue</strong>.',
+      '<strong>Multiply drops &times; 10</strong> = ppm Calcium Hardness. Target: 200&ndash;400 ppm.',
+    ],
+    tip: 'Dallas water is typically 100-200 ppm CH from the tap. You may need calcium chloride to raise it.',
+    hasCounter: true, counterLabel: 'R-0012 drops (× 10 = ppm CH)', multiplier: 10, unit: 'ppm CH'
+  },
+  {
+    id: 'cya', name: 'Cyanuric Acid (CYA)', color: '#27AE60',
+    reagents: ['R-0013'],
+    steps: [
+      'Fill the <strong>mixing bottle</strong> with pool water to the marked line.',
+      'Add <span class="reagent-tag">R-0013</span> (CYA Reagent) to the marked line. Cap and shake well.',
+      'Let stand for <strong>30 seconds</strong> (solution becomes cloudy).',
+      'Slowly pour the cloudy mixture into the <strong>turbidity tube</strong> (the tall skinny one with the black dot on the bottom).',
+      'Look down through the tube. <strong>Stop pouring when the black dot just disappears.</strong>',
+      'Read the <strong>scale on the side</strong> of the tube at the liquid level. Record as ppm CYA. Target: <strong>30&ndash;50 ppm</strong>.',
+    ],
+    tip: 'Do this test in bright light for best accuracy. CYA protects chlorine from UV — essential in Dallas sun. There\'s no chemical to lower CYA; only dilution works.'
+  }
+];
+
+const REAGENT_LIST = [
+  { id:'R-0001', name:'DPD #1', tests:['FC'], bottleOz:0.75 },
+  { id:'R-0002', name:'DPD #2', tests:['FC'], bottleOz:0.75 },
+  { id:'R-0003', name:'DPD #3', tests:['TC/CC'], bottleOz:0.75 },
+  { id:'R-0004', name:'Phenol Red', tests:['pH'], bottleOz:0.75 },
+  { id:'R-0005', name:'Acid Demand', tests:['Acid Dmnd'], bottleOz:0.75 },
+  { id:'R-0006', name:'Base Demand', tests:['Base Dmnd'], bottleOz:0.75 },
+  { id:'R-0007', name:'Thiosulfate', tests:['TA'], bottleOz:0.75 },
+  { id:'R-0008', name:'TA Indicator', tests:['TA'], bottleOz:0.75 },
+  { id:'R-0009', name:'Sulfuric Acid', tests:['TA'], bottleOz:0.75 },
+  { id:'R-0010', name:'Ca Buffer', tests:['CH'], bottleOz:0.75 },
+  { id:'R-0011L', name:'Ca Indicator', tests:['CH'], bottleOz:0.75 },
+  { id:'R-0012', name:'Hardness', tests:['CH'], bottleOz:0.75 },
+  { id:'R-0013', name:'CYA Reagent', tests:['CYA'], bottleOz:0.75 },
+];
+
+const Taylor = {
+  counters: {},
+
+  render() {
+    const container = document.getElementById('test-guide-list');
+    container.innerHTML = K2005_TESTS.map(test => {
+      const reagentTags = test.reagents.map(r => `<span class="reagent-tag">${r}</span>`).join(' ');
+      const stepsHtml = test.steps.map((s, i) =>
+        `<div class="test-step"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`
+      ).join('');
+
+      let counterHtml = '';
+      if (test.hasCounter) {
+        this.counters[test.id] = this.counters[test.id] || 0;
+        counterHtml = `
+          <div class="drop-counter" id="dc-${test.id}">
+            <div class="label">${test.counterLabel || 'Drops'}</div>
+            <button class="drop-btn minus" onclick="Taylor.count('${test.id}',-1);event.stopPropagation()">-</button>
+            <div class="drop-val" id="dc-val-${test.id}">0</div>
+            <button class="drop-btn plus" onclick="Taylor.count('${test.id}',1);event.stopPropagation()">+</button>
+          </div>
+          ${test.multiplier ? `<div class="drop-result" id="dc-result-${test.id}">= 0 ${test.unit}</div>` : ''}`;
+      }
+
+      return `<div class="test-card" id="tc-${test.id}">
+        <div class="test-card-header" onclick="Taylor.toggle('${test.id}')">
+          <div class="test-dot" style="background:${test.color}"></div>
+          <div class="test-name">${test.name}</div>
+          <div class="test-reagents">${reagentTags}</div>
+          <div class="test-chevron">&#9654;</div>
+        </div>
+        <div class="test-body">
+          ${stepsHtml}
+          ${counterHtml}
+          ${test.tip ? `<div class="calc-note" style="margin-top:.5rem"><strong>Tip:</strong> ${test.tip}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    this.renderReagents();
+  },
+
+  toggle(id) {
+    const card = document.getElementById('tc-' + id);
+    card.classList.toggle('open');
+  },
+
+  count(id, delta) {
+    this.counters[id] = Math.max(0, (this.counters[id] || 0) + delta);
+    const valEl = document.getElementById('dc-val-' + id);
+    if (valEl) valEl.textContent = this.counters[id];
+    const test = K2005_TESTS.find(t => t.id === id);
+    if (test && test.multiplier) {
+      const resEl = document.getElementById('dc-result-' + id);
+      if (resEl) resEl.textContent = '= ' + (this.counters[id] * test.multiplier) + ' ' + test.unit;
+    }
+  },
+
+  renderReagents() {
+    let reagents = Data.getReagents();
+    if (!reagents) {
+      reagents = {};
+      REAGENT_LIST.forEach(r => reagents[r.id] = 100);
+      Data.saveReagents(reagents);
+    }
+    const container = document.getElementById('reagent-tracker');
+    container.innerHTML = '<div class="reagent-grid">' + REAGENT_LIST.map(r => {
+      const pct = reagents[r.id] || 0;
+      const cls = pct > 30 ? 'ok' : pct > 10 ? 'low' : 'empty';
+      return `<div class="reagent-item">
+        <span style="font-size:.7rem;font-weight:700;min-width:52px">${r.id}</span>
+        <div class="reagent-bar"><div class="reagent-fill ${cls}" style="width:${pct}%"></div></div>
+        <span style="font-size:.65rem;font-weight:600;color:var(--gray-600)">${pct}%</span>
+      </div>`;
+    }).join('') + '</div>';
+  },
+
+  useReagent(id, drops) {
+    const reagents = Data.getReagents() || {};
+    const approxUse = drops * 0.8;
+    reagents[id] = Math.max(0, (reagents[id] || 100) - approxUse);
+    Data.saveReagents(reagents);
+  },
+
+  resetReagents() {
+    if (!confirm('Reset all reagent levels to 100%?')) return;
+    const reagents = {};
+    REAGENT_LIST.forEach(r => reagents[r.id] = 100);
+    Data.saveReagents(reagents);
+    this.renderReagents();
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   CHEMISTRY CALCULATOR
+   ═══════════════════════════════════════════════════════════ */
+const Calc = {
+  update() {
+    const fc  = parseFloat(document.getElementById('c-fc').value);
+    const ph  = parseFloat(document.getElementById('c-ph').value);
+    const ta  = parseFloat(document.getElementById('c-ta').value);
+    const ch  = parseFloat(document.getElementById('c-ch').value);
+    const cya = parseFloat(document.getElementById('c-cya').value);
+    const fcTarget = parseFloat(document.getElementById('c-fc-target').value);
+    let html = '';
+
+    html += '<div class="card"><div class="card-header"><span class="card-icon">&#128167;</span><div class="card-title">Chlorine</div></div>';
+    if (!isNaN(fc)) {
+      const need = fcTarget - fc;
+      if (need > 0) {
+        const liq = (need * 17).toFixed(1);
+        const cal = (need * 2.8).toFixed(1);
+        html += `<div class="calc-result"><strong>Liquid (10%):</strong> <span class="dose">${liq} fl oz</span> (${(liq/128).toFixed(2)} gal)</div>`;
+        html += `<div class="calc-result"><strong>Cal-Hypo (65%):</strong> <span class="dose">${cal} oz</span></div>`;
+      } else {
+        html += '<div class="calc-result ok"><span class="dose">No addition needed</span> — at or above target</div>';
+      }
+    } else { html += '<div class="calc-result">Enter FC reading above</div>'; }
+    html += '</div>';
+
+    html += '<div class="card"><div class="card-header"><span class="card-icon">&#9888;</span><div class="card-title">pH</div></div>';
+    if (!isNaN(ph)) {
+      if (ph > 7.6) {
+        const acid = ((ph - 7.4) / 0.2 * 13).toFixed(1);
+        html += `<div class="calc-result needs-lower"><strong>Muriatic Acid (31.45%):</strong> <span class="dose">${acid} fl oz</span></div>`;
+        html += '<div class="calc-warn">Add slowly near return jet. Wait 1 hr, re-test.</div>';
+      } else if (ph < 7.2) {
+        const soda = ((7.4 - ph) / 0.2 * 6).toFixed(1);
+        html += `<div class="calc-result"><strong>Soda Ash:</strong> <span class="dose">${soda} oz</span></div>`;
+      } else {
+        html += '<div class="calc-result ok"><span class="dose">In range (7.2–7.6)</span></div>';
+      }
+    } else { html += '<div class="calc-result">Enter pH above</div>'; }
+    html += '</div>';
+
+    html += '<div class="card"><div class="card-header"><span class="card-icon">&#9878;</span><div class="card-title">Alkalinity</div></div>';
+    if (!isNaN(ta)) {
+      if (ta < 80) {
+        const baking = ((100 - ta) / 10 * 24).toFixed(1);
+        html += `<div class="calc-result"><strong>Baking Soda:</strong> <span class="dose">${baking} oz</span> (${(baking/16).toFixed(2)} lbs)</div>`;
+      } else if (ta > 120) {
+        html += `<div class="calc-result needs-lower"><span class="dose">TA high (${ta})</span> — lower pH to 7.0 with acid, aerate to raise pH back.</div>`;
+      } else {
+        html += '<div class="calc-result ok"><span class="dose">In range (80–120 ppm)</span></div>';
+      }
+    } else { html += '<div class="calc-result">Enter TA above</div>'; }
+    html += '</div>';
+
+    html += '<div class="card"><div class="card-header"><span class="card-icon">&#9830;</span><div class="card-title">Calcium Hardness</div></div>';
+    if (!isNaN(ch)) {
+      if (ch < 200) {
+        const calcium = ((250 - ch) / 35 * 32).toFixed(1);
+        html += `<div class="calc-result"><strong>Calcium Chloride:</strong> <span class="dose">${calcium} oz</span> (${(calcium/16).toFixed(2)} lbs)</div>`;
+      } else if (ch > 400) {
+        html += `<div class="calc-result needs-lower"><span class="dose">CH high (${ch})</span> — partial drain &amp; refill.</div>`;
+      } else {
+        html += '<div class="calc-result ok"><span class="dose">In range (200–400 ppm)</span></div>';
+      }
+    } else { html += '<div class="calc-result">Enter CH above</div>'; }
+    html += '</div>';
+
+    html += '<div class="card"><div class="card-header"><span class="card-icon">&#9730;</span><div class="card-title">CYA (Stabilizer)</div></div>';
+    if (!isNaN(cya)) {
+      if (cya < 30) {
+        const oz = ((40 - cya) * 1.82).toFixed(1);
+        html += `<div class="calc-result"><strong>CYA Granules:</strong> <span class="dose">${oz} oz</span></div>`;
+        html += '<div class="calc-note">Put in a sock in the skimmer. Takes 48–72 hrs. Re-test after 3 days.</div>';
+      } else if (cya > 80) {
+        html += `<div class="calc-result needs-lower"><strong>CYA dangerously high (${cya})!</strong> <span class="dose">Partial drain required.</span></div>`;
+      } else if (cya > 50) {
+        html += `<div class="calc-result needs-lower"><strong>CYA getting high (${cya}).</strong> <span class="dose">Switch to liquid chlorine.</span></div>`;
+      } else {
+        html += '<div class="calc-result ok"><span class="dose">In range (30–50 ppm)</span></div>';
+      }
+    } else { html += '<div class="calc-result">Enter CYA above</div>'; }
+    html += '</div>';
+
+    document.getElementById('calc-results').innerHTML = html;
+  },
+
+  loadLast() {
+    const last = Data.lastTest();
+    if (!last) { alert('No test results logged yet.'); return; }
+    if (last.fc != null) document.getElementById('c-fc').value = last.fc;
+    if (last.ph != null) document.getElementById('c-ph').value = last.ph;
+    if (last.ta != null) document.getElementById('c-ta').value = last.ta;
+    if (last.ch != null) document.getElementById('c-ch').value = last.ch;
+    if (last.cya != null) document.getElementById('c-cya').value = last.cya;
+    this.update();
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   MAINTENANCE CHECKLIST
+   ═══════════════════════════════════════════════════════════ */
+const TASKS = [
+  { id:'v1', text:'Visual inspection — color, clarity, debris', freq:'daily' },
+  { id:'v2', text:'Skim surface debris with leaf net', freq:'daily' },
+  { id:'v3', text:'Check and empty skimmer basket', freq:'daily' },
+  { id:'v4', text:'Verify pump running; gauge normal', freq:'daily' },
+  { id:'v5', text:'Quick test strip — FC and pH', freq:'daily' },
+  { id:'v6', text:'Add chlorine if FC below 1.5 ppm', freq:'daily' },
+  { id:'w1', text:'Full K-2005 test (FC, CC, pH, TA)', freq:'weekly' },
+  { id:'w2', text:'Adjust pH first (target 7.2–7.6)', freq:'weekly' },
+  { id:'w3', text:'Adjust total alkalinity (80–120 ppm)', freq:'weekly' },
+  { id:'w4', text:'Adjust chlorine level (2–3 ppm)', freq:'weekly' },
+  { id:'w5', text:'Brush all walls, steps, and floor', freq:'weekly' },
+  { id:'w6', text:'Vacuum pool floor', freq:'weekly' },
+  { id:'w7', text:'Empty pump basket', freq:'weekly' },
+  { id:'w8', text:'Check filter pressure — record reading', freq:'weekly' },
+  { id:'w9', text:'Check water level (halfway up skimmer)', freq:'weekly' },
+  { id:'w10', text:'Shock treatment (evening)', freq:'weekly' },
+  { id:'m1', text:'Full lab test at pool store', freq:'monthly' },
+  { id:'m2', text:'Clean cartridge filter (hose + spray)', freq:'monthly' },
+  { id:'m3', text:'Inspect equipment — pump lid, O-rings', freq:'monthly' },
+  { id:'m4', text:'Add enzyme treatment (1 qt)', freq:'monthly' },
+  { id:'m5', text:'Inspect surface for staining/algae', freq:'monthly' },
+  { id:'m6', text:'Lubricate O-rings with silicone grease', freq:'monthly' },
+  { id:'s1', text:'Spring: Full lab test + mega-shock', freq:'seasonal' },
+  { id:'s2', text:'Spring: Deep-clean filter + inspect', freq:'seasonal' },
+  { id:'s3', text:'Summer: Verify CYA 30–50 ppm', freq:'seasonal' },
+  { id:'s4', text:'Summer: Pump to 10–12 hrs/day', freq:'seasonal' },
+  { id:'s5', text:'Fall: Acid soak filter + phosphate remover', freq:'seasonal' },
+  { id:'s6', text:'Fall: Balance end-of-season chemistry', freq:'seasonal' },
+  { id:'s7', text:'Winter: Freeze watch protocol', freq:'seasonal' },
+];
+
+const Checklist = {
+  filter: 'all',
+  getState() {
+    const raw = Data.getCL();
+    const weekKey = this.weekKey();
+    if (raw._week !== weekKey) {
+      const fresh = { _week: weekKey };
+      TASKS.forEach(t => {
+        fresh[t.id] = (t.freq === 'monthly' || t.freq === 'seasonal') ? (raw[t.id] || false) : false;
+      });
+      Data.saveCL(fresh);
+      return fresh;
+    }
+    return raw;
+  },
+  weekKey() {
+    const d = new Date();
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff)).toISOString().slice(0, 10);
+  },
+  toggle(id) {
+    const state = this.getState();
+    state[id] = !state[id];
+    Data.saveCL(state);
+    this.render();
+  },
+  resetAll() {
+    if (!confirm('Reset all checklists?')) return;
+    const fresh = { _week: this.weekKey() };
+    TASKS.forEach(t => fresh[t.id] = false);
+    Data.saveCL(fresh);
+    this.render();
+  },
+  render() {
+    const state = this.getState();
+    const tasks = this.filter === 'all' ? TASKS : TASKS.filter(t => t.freq === this.filter);
+    const total = tasks.length;
+    const done = tasks.filter(t => state[t.id]).length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+
+    document.getElementById('cl-progress').innerHTML = `
+      <div class="cl-bar"><div class="cl-fill" style="width:${pct}%"></div></div>
+      <div class="cl-pct">${done}/${total}</div>`;
+
+    const filters = ['all','daily','weekly','monthly','seasonal'];
+    const labels = { all:'All', daily:'Every Visit', weekly:'Weekly', monthly:'Monthly', seasonal:'Seasonal' };
+    document.getElementById('cl-pills').innerHTML = filters.map(f =>
+      `<button class="pill ${this.filter===f?'active':''}" onclick="Checklist.filter='${f}';Checklist.render()">${labels[f]}</button>`
+    ).join('');
+
+    document.getElementById('cl-list').innerHTML = tasks.map(t => {
+      const d = state[t.id];
+      return `<div class="cl-item ${d?'done':''}" onclick="Checklist.toggle('${t.id}')">
+        <div class="cl-check">${d?'&#10003;':''}</div>
+        <div class="cl-text">${t.text}</div>
+        <span class="cl-freq ${t.freq}">${t.freq}</span>
+      </div>`;
+    }).join('');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   LOG
+   ═══════════════════════════════════════════════════════════ */
+const Log = {
+  filterDays: 0,
+
+  add() {
+    const date = document.getElementById('l-date').value;
+    if (!date) { alert('Please select a date.'); return; }
+    const entry = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      date,
+      time: document.getElementById('l-time').value,
+      fc: parseFloat(document.getElementById('l-fc').value) || null,
+      cc: parseFloat(document.getElementById('l-cc').value) || null,
+      ph: parseFloat(document.getElementById('l-ph').value) || null,
+      ta: parseFloat(document.getElementById('l-ta').value) || null,
+      ch: parseFloat(document.getElementById('l-ch').value) || null,
+      cya: parseFloat(document.getElementById('l-cya').value) || null,
+      notes: document.getElementById('l-notes').value.trim()
+    };
+    Data.addLog(entry);
+    // Deduct approximate reagent usage for a full test
+    Taylor.useReagent('R-0001', 5);
+    Taylor.useReagent('R-0002', 5);
+    if (entry.cc != null) Taylor.useReagent('R-0003', 5);
+    if (entry.ph != null) Taylor.useReagent('R-0004', 5);
+    if (entry.ta != null) { Taylor.useReagent('R-0007', 5); Taylor.useReagent('R-0008', 1); Taylor.useReagent('R-0009', (entry.ta||100)/10); }
+    if (entry.ch != null) { Taylor.useReagent('R-0010', 20); Taylor.useReagent('R-0011L', 5); Taylor.useReagent('R-0012', (entry.ch||250)/10); }
+
+    ['l-fc','l-cc','l-ph','l-ta','l-ch','l-cya','l-notes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el.tagName === 'TEXTAREA') el.value = '';
+      else el.value = '';
+    });
+    document.getElementById('l-date').value = new Date().toISOString().slice(0, 10);
+    Sync.updateBadge();
+    Dashboard.render();
+    this.render();
+    Taylor.renderReagents();
+    alert('Reading saved!');
+  },
+
+  remove(id) {
+    if (!confirm('Delete this log entry?')) return;
+    Data.deleteLog(id);
+    this.render();
+    Dashboard.render();
+    Sync.updateBadge();
+  },
+
+  render() {
+    const logs = Data.getLogs();
+    let filtered = logs;
+    if (this.filterDays > 0) {
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - this.filterDays);
+      filtered = logs.filter(e => new Date(e.date) >= cutoff);
+    }
+
+    const periods = [
+      { label: 'All', days: 0 },
+      { label: '7 days', days: 7 },
+      { label: '30 days', days: 30 },
+      { label: '90 days', days: 90 },
+    ];
+    document.getElementById('log-pills').innerHTML = periods.map(p =>
+      `<button class="pill ${this.filterDays===p.days?'active':''}" onclick="Log.filterDays=${p.days};Log.render()">${p.label}</button>`
+    ).join('');
+
+    if (!filtered.length) {
+      document.getElementById('log-list').innerHTML = '<div class="empty"><div class="empty-icon">&#128221;</div>No entries yet. Log your first test!</div>';
+      return;
+    }
+
+    const keys = ['fc','cc','ph','ta','ch','cya'];
+    document.getElementById('log-list').innerHTML = filtered.map(e => {
+      const readings = keys.map(k => {
+        if (e[k] == null) return '';
+        const s = status(e[k], k);
+        return `<div class="log-r ${s}"><div class="log-r-label">${TARGETS[k].label}</div><div class="log-r-val">${e[k]}</div></div>`;
+      }).join('');
+      const syncTag = e.synced
+        ? '<span class="log-sync-tag synced">synced</span>'
+        : '<span class="log-sync-tag pending">pending</span>';
+      return `<div class="log-entry">
+        <div class="log-header">
+          <div class="log-date">${new Date(e.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} ${e.time||''} ${syncTag}</div>
+          <button class="log-delete" onclick="Log.remove('${e.id}')">&#10005;</button>
+        </div>
+        <div class="log-readings">${readings}</div>
+        ${e.notes ? `<div class="log-notes">${e.notes}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   SCHEDULE
+   ═══════════════════════════════════════════════════════════ */
+const Schedule = {
+  render() {
+    const m = new Date().getMonth();
+    let season, sClass, tips;
+    if (m >= 2 && m <= 4) { season = 'Spring'; sClass = 'spring'; tips = [
+      'Full lab test + mega-shock opening weekend',
+      'Deep-clean cartridge filter (chemical soak)',
+      'Inspect all equipment after winter',
+      'Balance chemistry: FC 2-3, pH 7.2-7.6, TA 80-120',
+      'Start running pump 8-10 hrs/day',
+      'Add fresh CYA if below 30 ppm',
+    ]; }
+    else if (m >= 5 && m <= 7) { season = 'Summer'; sClass = 'summer'; tips = [
+      'Test 2-3× per week (FC and pH) with K-2005',
+      'Full K-2005 panel weekly (all parameters)',
+      'Run pump 10-12 hrs/day in Dallas heat',
+      'Watch CYA — stay under 50 ppm',
+      'Maintain FC 3-4 ppm (higher for heavy use)',
+      'Shock weekly (evening) at 10× FC',
+    ]; }
+    else if (m >= 8 && m <= 10) { season = 'Fall'; sClass = 'fall'; tips = [
+      'Deep-clean filter (acid soak)',
+      'Phosphate remover treatment',
+      'Reduce pump to 6-8 hrs/day',
+      'Balance end-of-season chemistry',
+      'Clean and store accessories',
+    ]; }
+    else { season = 'Winter'; sClass = 'winter'; tips = [
+      'Dallas pools stay running year-round',
+      'Test every 1-2 weeks with K-2005',
+      'Run pump during freezes (24hr if below 32°F)',
+      'Maintain FC at 1-2 ppm (lower demand)',
+      'Check equipment for freeze damage after cold snaps',
+    ]; }
+
+    document.getElementById('schedule-content').innerHTML = `
+      <div class="season-banner ${sClass}">
+        <h2>&#9788; ${season} Protocol — Dallas, TX</h2>
+        <p>Current season priorities for your 14,000-gal pool</p>
+        <ul class="season-tasks">${tips.map(t => `<li>${t}</li>`).join('')}</ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-icon">&#128197;</span><div class="card-title">Suggested Testing Schedule</div></div>
+        <div class="test-step"><div class="step-num" style="background:var(--teal-light);color:var(--teal)">2-3×</div><div class="step-text"><strong>Per week:</strong> Quick strip test (FC + pH) or K-2005 FC & pH tests</div></div>
+        <div class="test-step"><div class="step-num" style="background:var(--blue-light);color:var(--blue)">1×</div><div class="step-text"><strong>Weekly:</strong> Full K-2005 panel — FC, CC, pH, TA (log results)</div></div>
+        <div class="test-step"><div class="step-num" style="background:var(--amber-light);color:var(--amber)">1×</div><div class="step-text"><strong>Monthly:</strong> Full K-2005 including CYA + Calcium Hardness</div></div>
+        <div class="test-step"><div class="step-num" style="background:var(--red-light);color:var(--red)">1×</div><div class="step-text"><strong>Monthly:</strong> Take sample to pool store for lab verification</div></div>
+      </div>`;
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD
+   ═══════════════════════════════════════════════════════════ */
+const Dashboard = {
+  render() {
+    const last = Data.lastTest();
+    const days = Data.daysSince();
+    const logs = Data.getLogs();
+    const unsynced = Data.getUnsynced().length;
+
+    // Status chips
+    let statusHtml = '';
+    statusHtml += `<div class="stat-chip"><span class="icon">&#128197;</span><div><div class="label">Last Test</div><div class="val">${days != null ? (days === 0 ? 'Today' : days + 'd ago') : 'Never'}</div></div></div>`;
+    statusHtml += `<div class="stat-chip"><span class="icon">&#128202;</span><div><div class="label">Total Logs</div><div class="val">${logs.length}</div></div></div>`;
+    statusHtml += `<div class="stat-chip" onclick="Sync.showSettings()" style="cursor:pointer"><span class="icon">&#9729;</span><div><div class="label">Sync</div><div class="val" style="color:${unsynced > 0 ? 'var(--amber)' : 'var(--green)'}">${unsynced > 0 ? unsynced + ' pending' : 'Up to date'}</div></div></div>`;
+    document.getElementById('dash-status').innerHTML = statusHtml;
+
+    // Chem cards
+    const keys = ['fc','cc','ph','ta','ch','cya'];
+    if (last) {
+      document.getElementById('dash-chem').innerHTML = keys.map(k => {
+        const val = last[k];
+        const s = status(val, k);
+        const t = TARGETS[k];
+        return `<div class="chem-card ${s}">
+          <div class="cc-label">${t.label}</div>
+          <div class="cc-val">${val != null ? val : '--'}</div>
+          <div class="cc-range">${t.min}–${t.max} ${t.unit}</div>
+          ${s ? `<div class="cc-badge ${s}">${statusLabel(s)}</div>` : ''}
+        </div>`;
+      }).join('');
+    } else {
+      document.getElementById('dash-chem').innerHTML = keys.map(k => {
+        const t = TARGETS[k];
+        return `<div class="chem-card"><div class="cc-label">${t.label}</div><div class="cc-val">--</div><div class="cc-range">${t.min}–${t.max} ${t.unit}</div></div>`;
+      }).join('');
+    }
+
+    // Alerts
+    const alertBox = document.getElementById('dash-alerts');
+    let alerts = [];
+    if (days != null && days >= 3) alerts.push('&#9888; It\'s been ' + days + ' days since your last test. Time to check FC and pH!');
+    if (last) {
+      if (last.fc != null && last.fc < 1) alerts.push('&#128680; Free chlorine critically low (' + last.fc + ' ppm). Shock immediately.');
+      if (last.ph != null && last.ph > 7.8) alerts.push('&#9888; pH is high (' + last.ph + '). Add muriatic acid.');
+      if (last.cya != null && last.cya > 70) alerts.push('&#9888; CYA very high (' + last.cya + ' ppm). Consider partial drain.');
+      if (last.cc != null && last.cc > 0.5) alerts.push('&#9888; Combined chlorine is ' + last.cc + ' ppm. Shock treatment recommended.');
+    }
+    if (alerts.length) {
+      alertBox.style.display = 'block';
+      alertBox.innerHTML = '<div class="card-header"><span class="card-icon">&#128276;</span><div class="card-title">Alerts</div></div>' +
+        alerts.map(a => `<div class="calc-warn" style="margin-bottom:.4rem">${a}</div>`).join('');
+    } else {
+      alertBox.style.display = 'none';
+    }
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   APP CONTROLLER
+   ═══════════════════════════════════════════════════════════ */
+const App = {
+  currentTab: 'dashboard',
+
+  init() {
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
+    });
+
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) Sync.closeModal();
+    });
+
+    document.getElementById('l-date').value = new Date().toISOString().slice(0, 10);
+
+    Dashboard.render();
+    Checklist.render();
+    Calc.update();
+    Log.render();
+    Schedule.render();
+    Taylor.render();
+    Sync.updateBadge();
+  },
+
+  switchTab(name) {
+    this.currentTab = name;
+    document.querySelectorAll('.nav-item').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.pane').forEach(p => p.classList.toggle('active', p.id === 'pane-' + name));
+    if (name === 'dashboard') Dashboard.render();
+    if (name === 'checklist') Checklist.render();
+    if (name === 'log') Log.render();
+    if (name === 'schedule') Schedule.render();
+    if (name === 'test') Taylor.render();
+    window.scrollTo(0, 0);
+  },
+
+  showMenu() {
+    document.getElementById('modal-body').innerHTML = `
+      <h2>&#8943; Menu</h2>
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        <button class="btn btn-secondary btn-block" onclick="App.switchTab('schedule');Sync.closeModal()">&#9788; Schedule</button>
+        <button class="btn btn-secondary btn-block" onclick="App.exportData();Sync.closeModal()">&#128229; Export Data</button>
+        <button class="btn btn-secondary btn-block" onclick="document.getElementById('importFile').click();Sync.closeModal()">&#128228; Import Data</button>
+        <button class="btn btn-secondary btn-block" onclick="Sync.closeModal()">Cancel</button>
+      </div>`;
+    document.getElementById('modal').classList.add('show');
+  },
+
+  exportData() {
+    const data = {
+      _export: 'PoolMaintenanceManager',
+      _date: new Date().toISOString(),
+      logs: Data.getLogs(),
+      checklist: Data.getCL(),
+      reagents: Data.getReagents()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pool_data_' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data._export !== 'PoolMaintenanceManager') { alert('Invalid file.'); return; }
+        if (!confirm('Replace all current data?')) return;
+        if (data.logs) Data.saveLogs(data.logs);
+        if (data.checklist) Data.saveCL(data.checklist);
+        if (data.reagents) Data.saveReagents(data.reagents);
+        Dashboard.render(); Checklist.render(); Log.render(); Taylor.renderReagents();
+        alert('Data imported!');
+      } catch (err) { alert('Error: ' + err.message); }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>
