@@ -515,11 +515,88 @@ body {
 .reagent-fill.low { background: var(--amber); }
 .reagent-fill.empty { background: var(--red); }
 
+/* ═══════ DOSING LOG ═══════ */
+.dose-entry {
+  background: var(--white);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: .75rem;
+  margin-bottom: .55rem;
+  border-left: 4px solid var(--gray-200);
+}
+.dose-entry.liquid-chlorine { border-left-color: #3498DB; }
+.dose-entry.acid { border-left-color: #E74C3C; }
+.dose-entry.soda-ash { border-left-color: #E67E22; }
+.dose-entry.baking-soda { border-left-color: #2980B9; }
+.dose-entry.calcium { border-left-color: #8E44AD; }
+.dose-entry.cya { border-left-color: #27AE60; }
+.dose-entry.algaecide { border-left-color: #16A085; }
+.dose-entry.phosphate { border-left-color: #0D7363; }
+.dose-entry.enzyme { border-left-color: #9A6700; }
+.dose-entry.shock { border-left-color: #C0392B; }
+
+.dose-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .4rem; }
+.dose-date { font-weight: 700; color: var(--blue); font-size: .85rem; }
+.dose-delete {
+  background: none; border: none; color: var(--gray-400); cursor: pointer;
+  font-size: 1rem; padding: 4px; min-width: 32px; min-height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.dose-badge {
+  display: inline-block; font-size: .7rem; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px; margin-bottom: .3rem;
+  background: var(--gray-100); color: var(--gray-600); margin-right: .3rem;
+}
+.dose-amount { font-size: 1rem; font-weight: 700; color: var(--dark); }
+.dose-reason { font-size: .78rem; color: var(--gray-600); margin-top: .25rem; padding: .35rem; background: var(--gray-100); border-radius: 6px; }
+
+.metric-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; margin-bottom: .7rem; }
+.metric-chip {
+  background: var(--white);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  padding: .6rem .6rem;
+  display: flex; align-items: flex-start; gap: .4rem;
+}
+.metric-chip .icon { font-size: 1rem; }
+.metric-chip .label { font-size: .62rem; color: var(--gray-600); text-transform: uppercase; font-weight: 600; }
+.metric-chip .val { font-size: .9rem; font-weight: 700; color: var(--blue); }
+
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .7rem; }
+.summary-card {
+  background: var(--white);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  padding: .6rem .7rem;
+}
+.summary-label { font-size: .65rem; color: var(--gray-600); text-transform: uppercase; font-weight: 700; }
+.summary-value { font-size: 1.1rem; font-weight: 800; color: var(--blue); margin-top: .15rem; }
+
+.collapsible-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem .85rem;
+  background: var(--gray-100);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: .5rem;
+}
+.collapsible-header:active { background: var(--gray-200); }
+.collapsible-header .icon { font-size: 1.2rem; }
+.collapsible-header .title { font-weight: 700; font-size: .95rem; flex: 1; }
+.collapsible-header .toggle { font-size: .8rem; color: var(--gray-400); transition: transform var(--transition); }
+.collapsible-header.active .toggle { transform: rotate(90deg); }
+.collapsible-content { display: none; margin-bottom: .7rem; }
+.collapsible-header.active + .collapsible-content { display: block; animation: slideUp .25s ease-out; }
+
 /* ═══════ RESPONSIVE ═══════ */
 @media (max-width: 380px) {
   .chem-grid { grid-template-columns: repeat(2, 1fr); }
   .form-grid { grid-template-columns: 1fr; }
   .quick-row { grid-template-columns: 1fr; }
+  .metric-row { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: 1fr; }
 }
 @media (min-width: 600px) {
   .chem-grid { grid-template-columns: repeat(3, 1fr); }
@@ -559,8 +636,8 @@ body {
     <div id="dash-alerts" class="card" style="display:none"></div>
     <div class="section-label">Quick Access</div>
     <div class="quick-row">
-      <button class="quick-btn secondary" onclick="App.switchTab('calc')">&#9878; Calculator</button>
-      <button class="quick-btn secondary" onclick="App.switchTab('schedule')">&#9788; Schedule</button>
+      <button class="quick-btn secondary" onclick="App.switchTab('assistant')">&#129302; Assistant</button>
+      <button class="quick-btn secondary" onclick="App.switchTab('dose')">&#128227; Dosing</button>
     </div>
   </section>
 
@@ -591,27 +668,83 @@ body {
     <button class="btn btn-danger btn-sm" style="margin-top:.5rem" onclick="Checklist.resetAll()">Reset Checklist</button>
   </section>
 
-  <!-- CALCULATOR -->
-  <section id="pane-calc" class="pane">
+  <!-- DOSING -->
+  <section id="pane-dose" class="pane">
+    <!-- Quick Dose Form -->
     <div class="card">
       <div class="card-header">
-        <span class="card-icon">&#9878;</span>
+        <span class="card-icon">&#128227;</span>
         <div>
-          <div class="card-title">Dosing Calculator</div>
-          <div class="card-subtitle">Calibrated for 14,000 gallons</div>
+          <div class="card-title">Quick Dose</div>
+          <div class="card-subtitle">Log a chemical addition</div>
         </div>
       </div>
       <div class="form-grid">
-        <div class="fg"><label>Free Chlorine (ppm)</label><input type="number" id="c-fc" step="0.1" min="0" max="20" oninput="Calc.update()" inputmode="decimal"></div>
-        <div class="fg"><label>Target FC (ppm)</label><input type="number" id="c-fc-target" value="3" step="0.5" min="1" max="30" oninput="Calc.update()" inputmode="decimal"></div>
-        <div class="fg"><label>pH</label><input type="number" id="c-ph" step="0.1" min="6" max="9" oninput="Calc.update()" inputmode="decimal"></div>
-        <div class="fg"><label>Total Alk (ppm)</label><input type="number" id="c-ta" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
-        <div class="fg"><label>Calcium Hard (ppm)</label><input type="number" id="c-ch" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
-        <div class="fg"><label>CYA (ppm)</label><input type="number" id="c-cya" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
+        <div class="fg fg-full"><label>Chemical</label>
+          <select id="d-chem">
+            <option value="">-- Select Chemical --</option>
+            <option value="Liquid Chlorine 10%">Liquid Chlorine 10%</option>
+            <option value="Muriatic Acid 31.45%">Muriatic Acid 31.45%</option>
+            <option value="Soda Ash">Soda Ash</option>
+            <option value="Baking Soda">Baking Soda</option>
+            <option value="Calcium Chloride">Calcium Chloride</option>
+            <option value="CYA (Stabilizer)">CYA (Stabilizer)</option>
+            <option value="Algaecide">Algaecide</option>
+            <option value="Phosphate Remover">Phosphate Remover</option>
+            <option value="Enzyme Treatment">Enzyme Treatment</option>
+            <option value="Cal-Hypo Shock">Cal-Hypo Shock</option>
+          </select>
+        </div>
+        <div class="fg"><label>Amount</label><input type="number" id="d-amount" step="0.5" min="0" placeholder="qty" inputmode="decimal"></div>
+        <div class="fg"><label>Unit</label>
+          <select id="d-unit">
+            <option value="">-- Unit --</option>
+            <option value="fl oz">fl oz</option>
+            <option value="oz">oz</option>
+            <option value="lbs">lbs</option>
+            <option value="gal">gal</option>
+          </select>
+        </div>
+        <div class="fg fg-full"><label>Reason (optional)</label><input type="text" id="d-reason" placeholder="e.g., to raise pH, weekly shock, etc."></div>
       </div>
-      <button class="btn btn-secondary btn-sm" onclick="Calc.loadLast()">Load Last Test</button>
+      <button class="btn btn-primary btn-block" onclick="Dosing.add()">Save Dose</button>
     </div>
-    <div id="calc-results"></div>
+
+    <!-- Dosing History -->
+    <div class="section-label">Dosing History</div>
+    <div id="dosing-list"></div>
+
+    <!-- Dosing Summary -->
+    <div class="section-label">7-Day & 30-Day Summary</div>
+    <div id="dosing-summary"></div>
+
+    <!-- Calculator (collapsible) -->
+    <div class="collapsible-header" onclick="Dosing.toggleCalc(this)">
+      <span class="icon">&#9878;</span>
+      <span class="title">Dosing Calculator</span>
+      <span class="toggle">&#9654;</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-icon">&#9878;</span>
+          <div>
+            <div class="card-title">Chemistry Calculator</div>
+            <div class="card-subtitle">Calibrated for 14,000 gallons</div>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="fg"><label>Free Chlorine (ppm)</label><input type="number" id="c-fc" step="0.1" min="0" max="20" oninput="Calc.update()" inputmode="decimal"></div>
+          <div class="fg"><label>Target FC (ppm)</label><input type="number" id="c-fc-target" value="3" step="0.5" min="1" max="30" oninput="Calc.update()" inputmode="decimal"></div>
+          <div class="fg"><label>pH</label><input type="number" id="c-ph" step="0.1" min="6" max="9" oninput="Calc.update()" inputmode="decimal"></div>
+          <div class="fg"><label>Total Alk (ppm)</label><input type="number" id="c-ta" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
+          <div class="fg"><label>Calcium Hard (ppm)</label><input type="number" id="c-ch" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
+          <div class="fg"><label>CYA (ppm)</label><input type="number" id="c-cya" step="1" min="0" oninput="Calc.update()" inputmode="decimal"></div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="Calc.loadLast()">Load Last Test</button>
+      </div>
+      <div id="calc-results"></div>
+    </div>
   </section>
 
   <!-- LOG -->
@@ -639,6 +772,26 @@ body {
         <div class="fg"><label>Total Alk</label><input type="number" id="l-ta" step="10" min="0" placeholder="ppm" inputmode="decimal"></div>
         <div class="fg"><label>Calcium Hard</label><input type="number" id="l-ch" step="10" min="0" placeholder="ppm" inputmode="decimal"></div>
         <div class="fg"><label>CYA</label><input type="number" id="l-cya" step="1" min="0" placeholder="ppm" inputmode="decimal"></div>
+        <div class="fg"><label>Water Temp</label><input type="number" id="l-temp" step="0.5" min="40" max="105" placeholder="°F" inputmode="decimal"></div>
+        <div class="fg"><label>Filter PSI</label><input type="number" id="l-psi" step="0.5" min="0" max="100" placeholder="PSI" inputmode="decimal"></div>
+        <div class="fg"><label>Pump Hours</label><input type="number" id="l-pump" step="0.5" min="0" max="24" placeholder="hrs/day" inputmode="decimal"></div>
+        <div class="fg"><label>Water Level</label>
+          <select id="l-level">
+            <option value="">-- Select --</option>
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="fg"><label>Clarity</label>
+          <select id="l-clarity">
+            <option value="">-- Select --</option>
+            <option value="crystal">Crystal Clear</option>
+            <option value="slight_haze">Slight Haze</option>
+            <option value="cloudy">Cloudy</option>
+            <option value="green">Green</option>
+          </select>
+        </div>
         <div class="fg fg-full"><label>Notes</label><textarea id="l-notes" rows="2" placeholder="Water appearance, chemicals added, weather..."></textarea></div>
       </div>
       <button class="btn btn-primary btn-block" onclick="Log.add()">Save Reading</button>
@@ -653,6 +806,20 @@ body {
     <div id="schedule-content"></div>
   </section>
 
+  <!-- VIRTUAL POOL MAINTENANCE ASSISTANT -->
+  <section id="pane-assistant" class="pane">
+    <div class="card" style="border-left:3px solid var(--teal);margin-bottom:.5rem">
+      <div class="card-header">
+        <span class="card-icon" style="font-size:1.5rem">&#129302;</span>
+        <div>
+          <div class="card-title" style="color:var(--teal)">Virtual Pool Maintenance Assistant</div>
+          <div class="card-subtitle">AI-powered recommendations for your 14,000 gal Dallas pool</div>
+        </div>
+      </div>
+    </div>
+    <div id="assistant-content"></div>
+  </section>
+
 </main>
 </div>
 
@@ -660,9 +827,9 @@ body {
 <nav class="bnav">
   <button class="nav-item active" data-tab="dashboard"><span class="nav-icon">&#9673;</span><span class="nav-label">Home</span></button>
   <button class="nav-item" data-tab="test"><span class="nav-icon">&#128167;</span><span class="nav-label">Test</span></button>
-  <button class="nav-item" data-tab="checklist"><span class="nav-icon">&#9745;</span><span class="nav-label">Tasks</span></button>
+  <button class="nav-item" data-tab="assistant"><span class="nav-icon">&#129302;</span><span class="nav-label">Assist</span></button>
   <button class="nav-item" data-tab="log"><span class="nav-icon">&#128221;</span><span class="nav-label">Log</span></button>
-  <button class="nav-item" data-tab="calc"><span class="nav-icon">&#9878;</span><span class="nav-label">Calc</span></button>
+  <button class="nav-item" data-tab="dose"><span class="nav-icon">&#128227;</span><span class="nav-label">Dose</span></button>
 </nav>
 
 <!-- MODAL -->
@@ -688,6 +855,30 @@ const TARGETS = {
   cya: { min:30, max:50, danger:90, label:'CYA', unit:'ppm' }
 };
 
+const CHEMICALS = [
+  { name: 'Liquid Chlorine 10%', unit: 'fl oz', color: '#3498DB' },
+  { name: 'Muriatic Acid 31.45%', unit: 'fl oz', color: '#E74C3C' },
+  { name: 'Soda Ash', unit: 'oz', color: '#E67E22' },
+  { name: 'Baking Soda', unit: 'lbs', color: '#2980B9' },
+  { name: 'Calcium Chloride', unit: 'lbs', color: '#8E44AD' },
+  { name: 'CYA (Stabilizer)', unit: 'oz', color: '#27AE60' },
+  { name: 'Algaecide', unit: 'fl oz', color: '#16A085' },
+  { name: 'Phosphate Remover', unit: 'fl oz', color: '#0D7363' },
+  { name: 'Enzyme Treatment', unit: 'fl oz', color: '#9A6700' },
+  { name: 'Cal-Hypo Shock', unit: 'lbs', color: '#C0392B' },
+];
+
+function calcLSI(temp, ph, ta, ch, tds) {
+  const tds_val = tds || 1000;
+  const temp_c = (temp - 32) * 5/9;
+  const A = (Math.log10(tds_val) - 1) / 10;
+  const B = -13.12 * Math.log10(temp_c + 273) + 34.55;
+  const C = Math.log10(ch) - 0.4;
+  const D = Math.log10(ta);
+  const pHs = (9.3 + A + B) - (C + D);
+  return (ph - pHs).toFixed(2);
+}
+
 function status(val, key) {
   if (val == null || val === '') return '';
   const t = TARGETS[key];
@@ -704,7 +895,7 @@ function statusLabel(s) {
    DATA (localStorage with safe fallback)
    ═══════════════════════════════════════════════════════════ */
 const Data = {
-  K_LOG:'pool_log', K_CL:'pool_checklist', K_SET:'pool_settings', K_RG:'pool_reagents',
+  K_LOG:'pool_log', K_CL:'pool_checklist', K_SET:'pool_settings', K_RG:'pool_reagents', K_DOS:'pool_dosing',
 
   _get(k, def) { try { return JSON.parse(localStorage.getItem(k)) || def; } catch(e) { return def; } },
   _set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} },
@@ -730,6 +921,11 @@ const Data = {
 
   getReagents() { return this._get(this.K_RG, null); },
   saveReagents(r) { this._set(this.K_RG, r); },
+
+  getDosing() { return this._get(this.K_DOS, []); },
+  saveDosing(d) { this._set(this.K_DOS, d); },
+  addDose(entry) { const d = this.getDosing(); d.unshift(entry); this.saveDosing(d); },
+  deleteDose(id) { this.saveDosing(this.getDosing().filter(e => e.id !== id)); },
 
   lastTest() { const l = this.getLogs(); return l.length ? l[0] : null; },
   daysSince() {
@@ -1246,16 +1442,30 @@ const Log = {
   add() {
     const date = document.getElementById('l-date').value;
     if (!date) { alert('Please select a date.'); return; }
+    const temp = parseFloat(document.getElementById('l-temp').value);
+    const ph = parseFloat(document.getElementById('l-ph').value);
+    const ta = parseFloat(document.getElementById('l-ta').value);
+    const ch = parseFloat(document.getElementById('l-ch').value);
+    let lsi = null;
+    if (!isNaN(temp) && !isNaN(ph) && !isNaN(ta) && !isNaN(ch)) {
+      lsi = calcLSI(temp, ph, ta, ch, 1000);
+    }
     const entry = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
       date,
       time: document.getElementById('l-time').value,
       fc: parseFloat(document.getElementById('l-fc').value) || null,
       cc: parseFloat(document.getElementById('l-cc').value) || null,
-      ph: parseFloat(document.getElementById('l-ph').value) || null,
-      ta: parseFloat(document.getElementById('l-ta').value) || null,
-      ch: parseFloat(document.getElementById('l-ch').value) || null,
+      ph: ph || null,
+      ta: ta || null,
+      ch: ch || null,
       cya: parseFloat(document.getElementById('l-cya').value) || null,
+      waterTemp: !isNaN(temp) ? temp : null,
+      filterPsi: parseFloat(document.getElementById('l-psi').value) || null,
+      pumpHours: parseFloat(document.getElementById('l-pump').value) || null,
+      waterLevel: document.getElementById('l-level').value || null,
+      clarity: document.getElementById('l-clarity').value || null,
+      lsi: lsi,
       notes: document.getElementById('l-notes').value.trim()
     };
     Data.addLog(entry);
@@ -1267,7 +1477,7 @@ const Log = {
     if (entry.ta != null) { Taylor.useReagent('R-0007', 5); Taylor.useReagent('R-0008', 1); Taylor.useReagent('R-0009', (entry.ta||100)/10); }
     if (entry.ch != null) { Taylor.useReagent('R-0010', 20); Taylor.useReagent('R-0011L', 5); Taylor.useReagent('R-0012', (entry.ch||250)/10); }
 
-    ['l-fc','l-cc','l-ph','l-ta','l-ch','l-cya','l-notes'].forEach(id => {
+    ['l-fc','l-cc','l-ph','l-ta','l-ch','l-cya','l-temp','l-psi','l-pump','l-level','l-clarity','l-notes'].forEach(id => {
       const el = document.getElementById(id);
       if (el.tagName === 'TEXTAREA') el.value = '';
       else el.value = '';
@@ -1335,6 +1545,110 @@ const Log = {
 };
 
 /* ═══════════════════════════════════════════════════════════
+   DOSING LOG
+   ═══════════════════════════════════════════════════════════ */
+const Dosing = {
+  add() {
+    const chem = document.getElementById('d-chem').value;
+    const amount = parseFloat(document.getElementById('d-amount').value);
+    const unit = document.getElementById('d-unit').value;
+    const reason = document.getElementById('d-reason').value.trim();
+
+    if (!chem) { alert('Please select a chemical.'); return; }
+    if (isNaN(amount) || amount <= 0) { alert('Please enter an amount.'); return; }
+    if (!unit) { alert('Please select a unit.'); return; }
+
+    const entry = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      date: new Date().toISOString().slice(0, 10),
+      time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit' }),
+      chemical: chem,
+      amount: amount,
+      unit: unit,
+      reason: reason
+    };
+
+    Data.addDose(entry);
+    document.getElementById('d-chem').value = '';
+    document.getElementById('d-amount').value = '';
+    document.getElementById('d-unit').value = '';
+    document.getElementById('d-reason').value = '';
+    this.render();
+    alert('Dose logged!');
+  },
+
+  remove(id) {
+    if (!confirm('Delete this dose entry?')) return;
+    Data.deleteDose(id);
+    this.render();
+  },
+
+  toggleCalc(header) {
+    header.classList.toggle('active');
+  },
+
+  render() {
+    const doses = Data.getDosing();
+    const listEl = document.getElementById('dosing-list');
+
+    if (!doses.length) {
+      listEl.innerHTML = '<div class="empty"><div class="empty-icon">&#128227;</div>No doses logged yet.</div>';
+    } else {
+      listEl.innerHTML = doses.map(e => {
+        const chemColor = CHEMICALS.find(c => c.name === e.chemical)?.color || '#666';
+        const chemClass = e.chemical.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        return `<div class="dose-entry">
+          <div class="dose-header">
+            <div class="dose-date">${new Date(e.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} ${e.time||''}</div>
+            <button class="dose-delete" onclick="Dosing.remove('${e.id}')">&#10005;</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+            <span class="dose-badge" style="background:${chemColor}20;color:${chemColor}">${e.chemical}</span>
+          </div>
+          <div class="dose-amount">${e.amount} ${e.unit}</div>
+          ${e.reason ? `<div class="dose-reason">${e.reason}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    // Summary
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7*24*60*60*1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30*24*60*60*1000);
+
+    const last7 = doses.filter(d => new Date(d.date) >= sevenDaysAgo);
+    const last30 = doses.filter(d => new Date(d.date) >= thirtyDaysAgo);
+
+    const chemsSummary7 = {};
+    const chemsSummary30 = {};
+    CHEMICALS.forEach(c => { chemsSummary7[c.name] = 0; chemsSummary30[c.name] = 0; });
+
+    last7.forEach(d => { if (chemsSummary7[d.chemical] !== undefined) chemsSummary7[d.chemical] += d.amount; });
+    last30.forEach(d => { if (chemsSummary30[d.chemical] !== undefined) chemsSummary30[d.chemical] += d.amount; });
+
+    const summaryEl = document.getElementById('dosing-summary');
+    let summaryHtml = '<div class="summary-grid">';
+
+    const chemsUsed = CHEMICALS.filter(c => chemsSummary7[c.name] > 0 || chemsSummary30[c.name] > 0);
+    if (chemsUsed.length) {
+      chemsUsed.forEach(c => {
+        summaryHtml += `<div class="summary-card">
+          <div style="font-weight:700;font-size:.85rem;color:${c.color}">${c.name}</div>
+          <div class="summary-label">7 days</div>
+          <div class="summary-value">${chemsSummary7[c.name]} ${c.unit}</div>
+          <div class="summary-label" style="margin-top:.4rem">30 days</div>
+          <div class="summary-value">${chemsSummary30[c.name]} ${c.unit}</div>
+        </div>`;
+      });
+    } else {
+      summaryHtml += '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--gray-400)">No chemical usage recorded in the past 30 days</div>';
+    }
+    summaryHtml += '</div>';
+    summaryEl.innerHTML = summaryHtml;
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
    SCHEDULE
    ═══════════════════════════════════════════════════════════ */
 const Schedule = {
@@ -1391,6 +1705,480 @@ const Schedule = {
 /* ═══════════════════════════════════════════════════════════
    DASHBOARD
    ═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   VIRTUAL POOL MAINTENANCE ASSISTANT
+   ═══════════════════════════════════════════════════════════ */
+const Assistant = {
+  POOL_GAL: 14000,
+
+  render() {
+    const logs = Data.getLogs();
+    const last = logs.length ? logs[0] : null;
+    const prev = logs.length > 1 ? logs[1] : null;
+    const days = Data.daysSince();
+    const el = document.getElementById('assistant-content');
+
+    if (!last) {
+      el.innerHTML = `
+        <div class="card" style="text-align:center;padding:2rem 1rem">
+          <div style="font-size:2.5rem;margin-bottom:.5rem">&#129302;</div>
+          <p style="color:var(--gray-600);margin-bottom:1rem">No test data yet. Log your first Taylor K-2005 reading and I'll analyze your water.</p>
+          <button class="btn btn-primary" onclick="App.switchTab('log')">&#128221; Log First Test</button>
+        </div>`;
+      return;
+    }
+
+    const analysis = this.analyze(last, prev, days, logs);
+    let html = '';
+
+    // Overall health score
+    html += `<div class="card" style="border-left:3px solid ${analysis.healthColor}">
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.5rem">
+        <div style="width:52px;height:52px;border-radius:50%;background:${analysis.healthColor};color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700">${analysis.score}</div>
+        <div>
+          <div style="font-weight:700;font-size:1.05rem;color:var(--gray-900)">${analysis.healthLabel}</div>
+          <div style="font-size:.8rem;color:var(--gray-600)">Based on ${last.date} ${last.time || ''} reading</div>
+        </div>
+      </div>
+      <div style="font-size:.82rem;color:var(--gray-600);line-height:1.45">${analysis.summary}</div>
+    </div>`;
+
+    // Priority action items
+    if (analysis.actions.length) {
+      html += '<div class="section-label">Priority Actions</div>';
+      analysis.actions.forEach((a, i) => {
+        const urgencyColors = { critical: 'var(--red)', high: 'var(--amber)', moderate: 'var(--blue-mid)', low: 'var(--teal)' };
+        const urgencyLabels = { critical: 'DO NOW', high: 'SOON', moderate: 'THIS WEEK', low: 'WHEN READY' };
+        const c = urgencyColors[a.urgency] || 'var(--gray-600)';
+        html += `<div class="card" style="border-left:3px solid ${c};margin-bottom:.4rem">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.25rem">
+                <span style="font-weight:700;color:${c};font-size:.75rem;background:${c}15;padding:2px 6px;border-radius:4px">${urgencyLabels[a.urgency] || 'INFO'}</span>
+                <span style="font-weight:700;font-size:.9rem">Step ${i + 1}: ${a.title}</span>
+              </div>
+              <div style="font-size:.82rem;color:var(--gray-600);line-height:1.4">${a.detail}</div>
+              ${a.dose ? `<div style="font-size:.82rem;color:var(--gray-900);font-weight:600;margin-top:.3rem;background:var(--gray-100);padding:4px 8px;border-radius:6px">&#128248; ${a.dose}</div>` : ''}
+            </div>
+          </div>
+        </div>`;
+      });
+    }
+
+    // Parameter breakdown
+    html += '<div class="section-label">Parameter Analysis</div>';
+    const params = [
+      { key:'fc', label:'Free Chlorine', icon:'&#128167;' },
+      { key:'cc', label:'Combined Chlorine', icon:'&#9888;' },
+      { key:'ph', label:'pH', icon:'&#9878;' },
+      { key:'ta', label:'Total Alkalinity', icon:'&#9878;' },
+      { key:'ch', label:'Calcium Hardness', icon:'&#128167;' },
+      { key:'cya', label:'Cyanuric Acid', icon:'&#9788;' },
+    ];
+    params.forEach(p => {
+      const val = last[p.key];
+      const s = status(val, p.key);
+      const t = TARGETS[p.key];
+      const trend = this.getTrend(logs, p.key);
+      const statusColors = { good:'var(--green)', low:'var(--amber)', high:'var(--amber)', danger:'var(--red)', '':'var(--gray-400)' };
+      const statusBg = { good:'var(--green-light)', low:'var(--amber-light)', high:'var(--amber-light)', danger:'var(--red-light)', '':'var(--gray-100)' };
+      const trendIcon = trend === 'rising' ? '&#8599;' : trend === 'falling' ? '&#8600;' : trend === 'stable' ? '&#8594;' : '';
+      const detail = analysis.paramNotes[p.key] || '';
+
+      html += `<div class="card" style="padding:.6rem .8rem;margin-bottom:.3rem;border-left:3px solid ${statusColors[s]}">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:600;font-size:.88rem">${p.icon} ${p.label}</div>
+          <div style="display:flex;align-items:center;gap:.4rem">
+            ${trendIcon ? `<span style="font-size:.85rem;color:var(--gray-600)">${trendIcon}</span>` : ''}
+            <span style="font-weight:700;font-size:1rem;color:${statusColors[s]}">${val != null ? val : '--'}</span>
+            <span style="font-size:.7rem;color:var(--gray-400)">${t.unit}</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:.15rem">
+          <span style="font-size:.72rem;color:var(--gray-400)">Target: ${t.min}–${t.max} ${t.unit}</span>
+          <span style="font-size:.72rem;padding:1px 5px;border-radius:3px;background:${statusBg[s]};color:${statusColors[s]};font-weight:600">${statusLabel(s)}</span>
+        </div>
+        ${detail ? `<div style="font-size:.78rem;color:var(--gray-600);margin-top:.3rem;line-height:1.35">${detail}</div>` : ''}
+      </div>`;
+    });
+
+    // Dallas seasonal tips
+    html += '<div class="section-label">Dallas Seasonal Notes</div>';
+    const month = new Date().getMonth();
+    let seasonTip = '';
+    if (month >= 5 && month <= 8) {
+      seasonTip = `<div class="card" style="border-left:3px solid var(--amber)">
+        <div style="font-weight:700;font-size:.88rem;color:var(--amber)">&#9728; Summer Mode Active</div>
+        <div style="font-size:.82rem;color:var(--gray-600);margin-top:.2rem;line-height:1.4">
+          Dallas heat (100F+) accelerates chlorine burn-off. Target FC 3-4 ppm, run pump 10-12 hrs/day.
+          Test 2-3x per week minimum. Shock weekly on Sunday evenings. CYA must be 30-50 to protect chlorine from UV.
+        </div></div>`;
+    } else if (month >= 2 && month <= 4) {
+      seasonTip = `<div class="card" style="border-left:3px solid var(--green)">
+        <div style="font-weight:700;font-size:.88rem;color:var(--green)">&#127793; Spring Startup</div>
+        <div style="font-size:.82rem;color:var(--gray-600);margin-top:.2rem;line-height:1.4">
+          Good time for a full panel test and lab verification at the pool store.
+          After winter, balance TA and pH first, then bring FC up to 3 ppm. Check CYA — it may have diluted from rain.
+          Clean cartridge filter and inspect all equipment.
+        </div></div>`;
+    } else if (month >= 9 && month <= 10) {
+      seasonTip = `<div class="card" style="border-left:3px solid var(--teal)">
+        <div style="font-weight:700;font-size:.88rem;color:var(--teal)">&#127810; Fall Transition</div>
+        <div style="font-size:.82rem;color:var(--gray-600);margin-top:.2rem;line-height:1.4">
+          Reduce pump runtime to 6-8 hours as temperatures drop. Continue weekly testing.
+          Consider phosphate remover and acid soak for cartridge filter. Leaf debris increases — skim daily.
+        </div></div>`;
+    } else {
+      seasonTip = `<div class="card" style="border-left:3px solid var(--blue-mid)">
+        <div style="font-weight:700;font-size:.88rem;color:var(--blue-mid)">&#10052; Winter Watch</div>
+        <div style="font-size:.82rem;color:var(--gray-600);margin-top:.2rem;line-height:1.4">
+          Monitor for freeze warnings — run pump when temps drop below 35F. Maintain FC at 2 ppm.
+          Test monthly minimum. Dallas doesn't typically require full winterization but keep equipment protected.
+        </div></div>`;
+    }
+    html += seasonTip;
+
+    // Quick action buttons
+    html += `<div style="display:flex;gap:.4rem;margin-top:.8rem;margin-bottom:1rem">
+      <button class="btn btn-primary" style="flex:1;font-size:.82rem" onclick="App.switchTab('log')">&#128221; Log New Test</button>
+      <button class="btn btn-secondary" style="flex:1;font-size:.82rem" onclick="App.switchTab('dose')">&#128227; Dosing</button>
+    </div>`;
+
+    el.innerHTML = html;
+  },
+
+  analyze(last, prev, days, logs) {
+    const actions = [];
+    const paramNotes = {};
+    let issues = 0;
+    let criticals = 0;
+
+    const fc = last.fc, cc = last.cc, ph = last.ph, ta = last.ta, ch = last.ch, cya = last.cya;
+
+    // ── FC/CYA ratio check (expert method) ──
+    let fcCyaWarning = false;
+    if (fc != null && cya != null && cya > 0) {
+      const ratio = fc / cya * 100;
+      if (ratio < 5) {
+        fcCyaWarning = true;
+        paramNotes.fc = (paramNotes.fc || '') + ' FC/CYA ratio is low (' + ratio.toFixed(1) + '%). Minimum recommended is 7.5% for adequate sanitation at your CYA level.';
+      }
+    }
+
+    // ── pH analysis (check first — affects everything) ──
+    if (ph != null) {
+      if (ph > 7.8) {
+        issues++; if (ph >= 8.0) criticals++;
+        const phDrop = Math.round((ph - 7.4) / 0.2);
+        const acidOz = phDrop * 13;
+        actions.push({
+          urgency: ph >= 8.0 ? 'critical' : 'high',
+          title: 'Lower pH',
+          detail: `pH is ${ph} — well above the 7.2-7.6 target. At this level, your chlorine is only ~${ph >= 8.0 ? '22' : '35'}% effective. This is the top priority because all other adjustments depend on proper pH.`,
+          dose: `Add ~${acidOz} fl oz muriatic acid (31.45%) to a bucket of pool water, pour at return jet with pump running. Retest in 4-6 hours.`
+        });
+        paramNotes.ph = `pH ${ph} makes chlorine significantly less effective. Lower this FIRST before adjusting anything else.`;
+      } else if (ph < 7.0) {
+        issues++; criticals++;
+        const phRise = Math.round((7.4 - ph) / 0.2);
+        const sodaOz = phRise * 6;
+        actions.push({
+          urgency: 'critical',
+          title: 'Raise pH immediately',
+          detail: `pH is ${ph} — dangerously acidic. This corrodes equipment, etches plaster, and irritates skin.`,
+          dose: `Add ~${sodaOz} oz soda ash dissolved in a bucket of warm water, pour at return jet.`
+        });
+        paramNotes.ph = `pH ${ph} is corrosive and damaging equipment. Raise immediately.`;
+      } else if (ph < 7.2) {
+        issues++;
+        const phRise = Math.round((7.4 - ph) / 0.2);
+        const sodaOz = phRise * 6;
+        actions.push({
+          urgency: 'moderate',
+          title: 'Raise pH slightly',
+          detail: `pH is ${ph} — a bit low. Target is 7.4 for optimal chlorine performance and comfort.`,
+          dose: `Add ~${sodaOz} oz soda ash to raise to 7.4.`
+        });
+        paramNotes.ph = `pH ${ph} is slightly low but not critical. Soda ash will bring it up.`;
+      } else if (ph > 7.6) {
+        issues++;
+        const phDrop = Math.round((ph - 7.4) / 0.2);
+        const acidOz = phDrop * 13;
+        actions.push({
+          urgency: 'moderate',
+          title: 'Lower pH',
+          detail: `pH is ${ph} — slightly above optimal range. Chlorine effectiveness decreases as pH rises.`,
+          dose: `Add ~${acidOz} fl oz muriatic acid in a bucket of pool water.`
+        });
+        paramNotes.ph = `pH ${ph} is slightly high. Muriatic acid will bring it down.`;
+      } else {
+        paramNotes.ph = `pH ${ph} is in the ideal range (7.2-7.6). Chlorine is working efficiently.`;
+      }
+    }
+
+    // ── TA analysis (affects pH stability) ──
+    if (ta != null) {
+      if (ta > 120) {
+        issues++;
+        const taExcess = ta - 100;
+        paramNotes.ta = `TA is ${ta} ppm (target: 80-120). High TA buffers pH high, making it resist adjustment. Muriatic acid used for pH will also help lower TA. May need repeated acid additions over several days.`;
+        if (ta > 150) {
+          actions.push({
+            urgency: 'high',
+            title: 'Lower Total Alkalinity',
+            detail: `TA at ${ta} ppm is significantly high. This is likely causing your pH to drift up. Requires acid to lower — the pH acid dose will help, but you may need additional treatments.`,
+            dose: `Muriatic acid added for pH will also reduce TA. After pH stabilizes, retest TA and repeat if still above 120.`
+          });
+        }
+      } else if (ta < 80) {
+        issues++;
+        const lbs = ((80 - ta) / 10 * 1.5).toFixed(1);
+        actions.push({
+          urgency: 'moderate',
+          title: 'Raise Total Alkalinity',
+          detail: `TA is ${ta} ppm — below the 80-120 target. Low TA causes pH to bounce around unpredictably.`,
+          dose: `Add ~${lbs} lbs baking soda, broadcast across deep end with pump running.`
+        });
+        paramNotes.ta = `TA ${ta} ppm is low. Add baking soda to stabilize pH swings.`;
+      } else {
+        paramNotes.ta = `TA ${ta} ppm is in the ideal 80-120 range. Good pH buffering capacity.`;
+      }
+    }
+
+    // ── CC analysis (chloramines — MUST be before FC action) ──
+    if (cc != null && cc > 0.5) {
+      issues++; if (cc >= 1.0) criticals++;
+      const breakpoint = cc * 10;
+      const fcNeeded = breakpoint - (fc || 0);
+      const clOz = Math.round(fcNeeded * 17);
+      actions.push({
+        urgency: cc >= 1.0 ? 'critical' : 'high',
+        title: 'Breakpoint chlorination (shock)',
+        detail: `Combined chlorine is ${cc} ppm — ${cc >= 1.0 ? 'very high' : 'above the 0.5 limit'}. Chloramines cause the "chlorine smell" and eye irritation. Breakpoint chlorination requires reaching ${breakpoint.toFixed(0)} ppm FC (10x CC) to destroy them.${ph != null && ph > 7.6 ? ' Fix pH FIRST for maximum shock effectiveness.' : ''}`,
+        dose: `Add ~${clOz > 0 ? clOz : 17} fl oz (~${(clOz / 128).toFixed(1)} gal) of 10% liquid chlorine at dusk. Run pump overnight. Retest next morning.`
+      });
+      paramNotes.cc = `CC ${cc} ppm indicates chloramines. Pool needs breakpoint chlorination (shock). ${cc >= 1.0 ? 'This is causing eye/skin irritation and poor sanitation.' : 'Mild but should be addressed.'}`;
+    } else if (cc != null) {
+      paramNotes.cc = `CC ${cc} ppm is within the acceptable range (< 0.5). No chloramine issues.`;
+    }
+
+    // ── FC analysis ──
+    if (fc != null) {
+      if (fc < 1) {
+        issues++; criticals++;
+        const raise = 3 - fc;
+        const oz = Math.round(raise * 17);
+        if (!actions.find(a => a.title.includes('shock') || a.title.includes('Breakpoint'))) {
+          actions.push({
+            urgency: 'critical',
+            title: 'Raise Free Chlorine immediately',
+            detail: `FC is ${fc} ppm — critically low. Pool is not sanitized. Risk of algae bloom and bacteria growth.`,
+            dose: `Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm. Walk the perimeter while pouring.`
+          });
+        }
+        paramNotes.fc = (paramNotes.fc || '') + ` FC ${fc} ppm is dangerously low. Pool is essentially unsanitized.`;
+      } else if (fc < 2) {
+        issues++;
+        const raise = 3 - fc;
+        const oz = Math.round(raise * 17);
+        if (!actions.find(a => a.title.includes('shock') || a.title.includes('Breakpoint'))) {
+          actions.push({
+            urgency: 'high',
+            title: 'Raise Free Chlorine',
+            detail: `FC is ${fc} ppm — below the 2-4 target. Sanitizing power is insufficient, especially in Dallas heat.${ph != null && ph > 7.6 ? ' High pH is further reducing chlorine effectiveness.' : ''}`,
+            dose: `Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm.`
+          });
+        }
+        paramNotes.fc = (paramNotes.fc || '') + ` FC ${fc} ppm is low. Needs to be raised to at least 2 ppm (ideally 3).`;
+      } else if (fc > 5 && !actions.find(a => a.title.includes('shock'))) {
+        paramNotes.fc = (paramNotes.fc || '') + ` FC ${fc} ppm is high but will naturally decrease. Avoid swimming until below 5 ppm.`;
+      } else if (!paramNotes.fc) {
+        paramNotes.fc = `FC ${fc} ppm is in the target range (2-4). Good sanitizing level.`;
+      }
+    }
+
+    // ── CH analysis ──
+    if (ch != null) {
+      if (ch < 200) {
+        issues++;
+        const lbs = ((200 - ch) / 10 * 1.25).toFixed(1);
+        actions.push({
+          urgency: 'low',
+          title: 'Raise Calcium Hardness',
+          detail: `CH is ${ch} ppm — below the 200-400 target. Low calcium causes water to become aggressive, etching plaster and corroding metal.`,
+          dose: `Add ~${lbs} lbs calcium chloride. Pre-dissolve in bucket (caution: gets very hot). Pour slowly at return jet.`
+        });
+        paramNotes.ch = `CH ${ch} ppm is low. Dallas tap is typically 100-200 ppm. Add calcium chloride.`;
+      } else if (ch > 400) {
+        issues++;
+        paramNotes.ch = `CH ${ch} ppm is high. This can cause scaling on tile and equipment. Partial drain with fresh water is the only way to lower it.`;
+        actions.push({
+          urgency: 'low',
+          title: 'Address high Calcium Hardness',
+          detail: `CH at ${ch} ppm is above 400. Risk of scale buildup on tile, heater, and plumbing.`,
+          dose: `Only solution is partial drain and refill with fresh water. Dallas tap averages 100-200 ppm CH.`
+        });
+      } else {
+        paramNotes.ch = `CH ${ch} ppm is in the ideal 200-400 range. No scaling or etching risk.`;
+      }
+    }
+
+    // ── CYA analysis ──
+    if (cya != null) {
+      if (cya < 30) {
+        issues++;
+        actions.push({
+          urgency: 'moderate',
+          title: 'Add Stabilizer (CYA)',
+          detail: `CYA is ${cya} ppm — below the 30-50 target. Without adequate CYA, Dallas sun destroys chlorine in 1-2 hours. This is likely why FC keeps dropping.`,
+          dose: `Add stabilizer (cyanuric acid) per product label to reach 40 ppm. Add slowly through skimmer or dissolve in sock hung in front of return.`
+        });
+        paramNotes.cya = `CYA ${cya} ppm is too low. Chlorine is being destroyed by UV. Essential to fix in Dallas.`;
+      } else if (cya > 70) {
+        issues++;
+        paramNotes.cya = `CYA ${cya} ppm is high. This locks up chlorine, requiring higher FC levels to sanitize. The only way to lower CYA is partial drain and refill.`;
+        actions.push({
+          urgency: cya > 90 ? 'high' : 'moderate',
+          title: 'CYA is too high',
+          detail: `CYA at ${cya} ppm reduces chlorine effectiveness. At this level, you need FC of at least ${(cya * 0.075).toFixed(1)} ppm (7.5% of CYA) to sanitize properly.`,
+          dose: `Partial drain (${Math.round((cya - 40) / cya * 100)}% of water) and refill to bring CYA down to ~40 ppm.`
+        });
+      } else if (cya > 50) {
+        paramNotes.cya = `CYA ${cya} ppm is slightly high but manageable. Monitor and avoid adding more stabilized chlorine (trichlor tabs). Use liquid chlorine instead.`;
+      } else {
+        paramNotes.cya = `CYA ${cya} ppm is in the ideal 30-50 range. Good UV protection for chlorine.`;
+      }
+    } else {
+      paramNotes.cya = 'CYA not tested. Test this ASAP — critical for Dallas sun protection.';
+      if (!actions.find(a => a.title.includes('CYA'))) {
+        actions.push({
+          urgency: 'moderate',
+          title: 'Test CYA level',
+          detail: 'CYA was not recorded in this test. Without knowing your stabilizer level, it\'s impossible to know if chlorine is being protected from UV degradation.',
+          dose: 'Use the Taylor K-2005 CYA test (R-0013 + turbidity tube) in bright light.'
+        });
+      }
+    }
+
+    // ── Filter pressure check ──
+    if (last.filterPsi != null && last.filterPsi > 25) {
+      issues++;
+      actions.push({
+        urgency: 'moderate',
+        title: 'Clean filter cartridge',
+        detail: `Filter pressure is ${last.filterPsi} PSI, which is high (baseline is typically ~10-15 PSI). This means the cartridge is clogged and needs cleaning.`,
+        dose: 'Hose off the filter cartridge with cold water or chemically clean with acid soak.'
+      });
+    }
+
+    // ── LSI (Langelier Saturation Index) check ──
+    if (last.lsi != null) {
+      const lsi = parseFloat(last.lsi);
+      if (lsi < -0.3) {
+        issues++;
+        paramNotes.lsi = `LSI ${last.lsi} is corrosive. Water will etch plaster and corrode equipment. Raise pH or alkalinity.`;
+        actions.push({
+          urgency: 'moderate',
+          title: 'Water is corrosive (LSI)',
+          detail: `LSI of ${last.lsi} indicates corrosive water. This damages pool surfaces and equipment over time.`,
+          dose: 'Raise pH to 7.4+ or increase alkalinity. Retest and recalculate LSI in 24 hours.'
+        });
+      } else if (lsi > 0.3) {
+        issues++;
+        paramNotes.lsi = `LSI ${last.lsi} is scaling. Water will precipitate calcium deposits. Lower pH or alkalinity.`;
+        actions.push({
+          urgency: 'moderate',
+          title: 'Water is scaling (LSI)',
+          detail: `LSI of ${last.lsi} indicates scaling water. Calcium will precipitate onto tile, heater, and equipment.`,
+          dose: 'Lower pH to 7.4 or reduce alkalinity with acid. Retest in 24 hours.'
+        });
+      } else {
+        paramNotes.lsi = `LSI ${last.lsi} is balanced (−0.3 to +0.3). Water is neither corrosive nor scaling.`;
+      }
+    }
+
+    // ── Pump runtime check ──
+    if (last.pumpHours != null) {
+      const month = new Date().getMonth();
+      const summmerTarget = 10;
+      const winterTarget = 6;
+      const targetHours = (month >= 5 && month <= 8) ? summmerTarget : winterTarget;
+      if (last.pumpHours < targetHours) {
+        paramNotes.pumpHours = `Pump running ${last.pumpHours} hrs/day. Consider increasing to ${targetHours}+ for better circulation.`;
+      } else {
+        paramNotes.pumpHours = `Pump running ${last.pumpHours} hrs/day — good for current season.`;
+      }
+    }
+
+    // ── Dosing history check ──
+    const dosingData = Data.getDosing();
+    const recentDoses = dosingData.filter(d => {
+      const daysAgo = (Date.now() - new Date(d.date).getTime()) / 86400000;
+      return daysAgo <= 30;
+    });
+    if (recentDoses.length > 0) {
+      const chlorineDoses = recentDoses.filter(d => d.chemical.includes('Chlorine') || d.chemical.includes('Shock')).length;
+      const acidDoses = recentDoses.filter(d => d.chemical.includes('Acid')).length;
+      if (chlorineDoses === 0 && recentDoses.length > 0 && !actions.find(a => a.title.includes('Chlorine'))) {
+        paramNotes.dosing = `No chlorine additions logged in the past 30 days. If your FC is adequate, that's great. Otherwise, start logging doses.`;
+      } else if (chlorineDoses > 0) {
+        paramNotes.dosing = `${chlorineDoses} chlorine dose(s) logged in past 30 days. Keep monitoring FC trends.`;
+      }
+    }
+
+    // ── Testing frequency check ──
+    if (days != null && days >= 3) {
+      actions.push({
+        urgency: days >= 7 ? 'high' : 'moderate',
+        title: 'Test your water',
+        detail: `It's been ${days} days since your last test. ${days >= 7 ? 'Weekly testing minimum is recommended.' : 'Test FC and pH at least 2-3x per week in Dallas.'} Water chemistry can change rapidly, especially in warm weather.`,
+        dose: ''
+      });
+    }
+
+    // Sort actions by urgency
+    const urgencyOrder = { critical: 0, high: 1, moderate: 2, low: 3 };
+    actions.sort((a, b) => (urgencyOrder[a.urgency] ?? 4) - (urgencyOrder[b.urgency] ?? 4));
+
+    // Calculate health score (0-100)
+    let score = 100;
+    score -= criticals * 20;
+    score -= (issues - criticals) * 8;
+    if (days != null && days >= 7) score -= 10;
+    score = Math.max(0, Math.min(100, score));
+
+    let healthLabel, healthColor;
+    if (score >= 85) { healthLabel = 'Pool Looks Great'; healthColor = 'var(--green)'; }
+    else if (score >= 65) { healthLabel = 'Needs Attention'; healthColor = 'var(--amber)'; }
+    else if (score >= 40) { healthLabel = 'Action Required'; healthColor = 'var(--red)'; }
+    else { healthLabel = 'Urgent — Multiple Issues'; healthColor = 'var(--red)'; }
+
+    // Build summary
+    let summary = '';
+    if (criticals > 0) {
+      summary = `Your pool has ${criticals} critical issue${criticals > 1 ? 's' : ''} that need${criticals === 1 ? 's' : ''} immediate attention. Follow the priority actions below in order — the sequence matters because each fix builds on the previous one.`;
+    } else if (issues > 0) {
+      summary = `Your water has ${issues} parameter${issues > 1 ? 's' : ''} outside the ideal range. None are critical, but addressing them will improve water quality and protect your equipment.`;
+    } else {
+      summary = 'All tested parameters are within ideal ranges. Your pool chemistry is well-balanced. Keep up the regular testing schedule and maintain current chemical levels.';
+    }
+
+    return { score, healthLabel, healthColor, summary, actions, paramNotes };
+  },
+
+  getTrend(logs, key) {
+    const vals = logs.slice(0, 5).map(l => l[key]).filter(v => v != null);
+    if (vals.length < 2) return '';
+    const recent = vals[0];
+    const older = vals[vals.length - 1];
+    const diff = recent - older;
+    const threshold = key === 'ph' ? 0.15 : (key === 'cc' ? 0.2 : (TARGETS[key].max - TARGETS[key].min) * 0.15);
+    if (diff > threshold) return 'rising';
+    if (diff < -threshold) return 'falling';
+    return 'stable';
+  }
+};
+
 const Dashboard = {
   render() {
     const last = Data.lastTest();
@@ -1426,6 +2214,49 @@ const Dashboard = {
       }).join('');
     }
 
+    // Pool Conditions
+    let conditionsHtml = '';
+    if (last) {
+      conditionsHtml += '<div class="section-label">Pool Conditions</div>';
+      conditionsHtml += '<div class="metric-row">';
+      if (last.waterTemp != null) conditionsHtml += `<div class="metric-chip"><span class="icon">&#127777;</span><div><div class="label">Water Temp</div><div class="val">${last.waterTemp}°F</div></div></div>`;
+      if (last.filterPsi != null) conditionsHtml += `<div class="metric-chip"><span class="icon">&#128280;</span><div><div class="label">Filter PSI</div><div class="val">${last.filterPsi}</div></div></div>`;
+      if (last.pumpHours != null) conditionsHtml += `<div class="metric-chip"><span class="icon">&#128344;</span><div><div class="label">Pump Hours</div><div class="val">${last.pumpHours}</div></div></div>`;
+      if (last.clarity) {
+        const clarityIcons = { crystal:'✨', slight_haze:'🌫️', cloudy:'☁️', green:'🟢' };
+        const clarityLabels = { crystal:'Crystal', slight_haze:'Hazy', cloudy:'Cloudy', green:'Green' };
+        conditionsHtml += `<div class="metric-chip"><span class="icon">${clarityIcons[last.clarity]}</span><div><div class="label">Clarity</div><div class="val" style="font-size:.8rem">${clarityLabels[last.clarity]}</div></div></div>`;
+      }
+      if (last.lsi != null) {
+        const lsiStatus = last.lsi < -0.3 ? 'var(--red)' : (last.lsi > 0.3 ? 'var(--amber)' : 'var(--green)');
+        conditionsHtml += `<div class="metric-chip"><span class="icon">⚖️</span><div><div class="label">LSI</div><div class="val" style="color:${lsiStatus}">${last.lsi}</div></div></div>`;
+      }
+      conditionsHtml += '</div>';
+      const condEl = document.createElement('div');
+      condEl.innerHTML = conditionsHtml;
+      document.getElementById('dash-chem').parentElement.insertAdjacentHTML('afterend', conditionsHtml);
+    }
+
+    // Recent Dosing
+    const doses = Data.getDosing().slice(0, 3);
+    if (doses.length) {
+      let recentDosing = '<div class="section-label" style="margin-top:.8rem">Recent Dosing</div>';
+      doses.forEach(d => {
+        const chemColor = CHEMICALS.find(c => c.name === d.chemical)?.color || '#666';
+        const daysAgo = Math.floor((Date.now() - new Date(d.date).getTime()) / 86400000);
+        const timeAgo = daysAgo === 0 ? 'Today' : (daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago');
+        recentDosing += `<div class="card" style="padding:.6rem .8rem;margin-bottom:.4rem;border-left:3px solid ${chemColor}">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:.88rem">${d.chemical}</div>
+              <div style="font-size:.75rem;color:var(--gray-600)">${d.amount} ${d.unit} — ${timeAgo}</div>
+            </div>
+          </div>
+        </div>`;
+      });
+      document.getElementById('dash-chem').parentElement.insertAdjacentHTML('afterend', recentDosing);
+    }
+
     // Alerts
     const alertBox = document.getElementById('dash-alerts');
     let alerts = [];
@@ -1435,6 +2266,12 @@ const Dashboard = {
       if (last.ph != null && last.ph > 7.8) alerts.push('&#9888; pH is high (' + last.ph + '). Add muriatic acid.');
       if (last.cya != null && last.cya > 70) alerts.push('&#9888; CYA very high (' + last.cya + ' ppm). Consider partial drain.');
       if (last.cc != null && last.cc > 0.5) alerts.push('&#9888; Combined chlorine is ' + last.cc + ' ppm. Shock treatment recommended.');
+      if (last.filterPsi != null && last.filterPsi > 25) alerts.push('&#9888; Filter pressure high (' + last.filterPsi + ' PSI). Time to clean?');
+      if (last.lsi != null) {
+        const lsi = parseFloat(last.lsi);
+        if (lsi < -0.3) alerts.push('&#9888; LSI is corrosive (' + last.lsi + '). Pool may etch or corrode.');
+        else if (lsi > 0.3) alerts.push('&#9888; LSI is scaling (' + last.lsi + '). May cause deposits.');
+      }
     }
     if (alerts.length) {
       alertBox.style.display = 'block';
@@ -1466,6 +2303,7 @@ const App = {
     Dashboard.render();
     Checklist.render();
     Calc.update();
+    Dosing.render();
     Log.render();
     Schedule.render();
     Taylor.render();
@@ -1481,6 +2319,8 @@ const App = {
     if (name === 'log') Log.render();
     if (name === 'schedule') Schedule.render();
     if (name === 'test') Taylor.render();
+    if (name === 'dose') Dosing.render();
+    if (name === 'assistant') Assistant.render();
     window.scrollTo(0, 0);
   },
 
@@ -1488,6 +2328,7 @@ const App = {
     document.getElementById('modal-body').innerHTML = `
       <h2>&#8943; Menu</h2>
       <div style="display:flex;flex-direction:column;gap:.4rem">
+        <button class="btn btn-secondary btn-block" onclick="App.switchTab('checklist');Sync.closeModal()">&#9745; Tasks Checklist</button>
         <button class="btn btn-secondary btn-block" onclick="App.switchTab('schedule');Sync.closeModal()">&#9788; Schedule</button>
         <button class="btn btn-secondary btn-block" onclick="App.exportData();Sync.closeModal()">&#128229; Export Data</button>
         <button class="btn btn-secondary btn-block" onclick="document.getElementById('importFile').click();Sync.closeModal()">&#128228; Import Data</button>
@@ -1501,6 +2342,7 @@ const App = {
       _export: 'PoolMaintenanceManager',
       _date: new Date().toISOString(),
       logs: Data.getLogs(),
+      dosing: Data.getDosing(),
       checklist: Data.getCL(),
       reagents: Data.getReagents()
     };
@@ -1525,9 +2367,10 @@ const App = {
         if (data._export !== 'PoolMaintenanceManager') { alert('Invalid file.'); return; }
         if (!confirm('Replace all current data?')) return;
         if (data.logs) Data.saveLogs(data.logs);
+        if (data.dosing) Data.saveDosing(data.dosing);
         if (data.checklist) Data.saveCL(data.checklist);
         if (data.reagents) Data.saveReagents(data.reagents);
-        Dashboard.render(); Checklist.render(); Log.render(); Taylor.renderReagents();
+        Dashboard.render(); Checklist.render(); Dosing.render(); Log.render(); Taylor.renderReagents();
         alert('Data imported!');
       } catch (err) { alert('Error: ' + err.message); }
     };
