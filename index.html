@@ -493,6 +493,90 @@ body {
 .empty { text-align: center; padding: 2.5rem 1rem; color: var(--gray-400); }
 .empty-icon { font-size: 2.5rem; margin-bottom: .4rem; }
 
+/* ═══════ POOL BOT CHAT ═══════ */
+.chat-container {
+  display: flex; flex-direction: column; height: calc(100dvh - 210px); height: calc(100vh - 210px);
+  min-height: 300px;
+}
+.chat-thread {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: .4rem 0; display: flex; flex-direction: column; gap: .4rem;
+}
+.chat-msg {
+  max-width: 88%; padding: .6rem .8rem; border-radius: 14px;
+  font-size: .85rem; line-height: 1.45; word-wrap: break-word;
+  animation: slideUp .2s ease-out;
+}
+.chat-msg.bot {
+  align-self: flex-start; background: var(--white); color: var(--dark);
+  border-bottom-left-radius: 4px; box-shadow: var(--shadow);
+}
+.chat-msg.bot .bot-label {
+  font-size: .62rem; font-weight: 700; text-transform: uppercase;
+  color: var(--teal); letter-spacing: .04em; margin-bottom: .2rem;
+}
+.chat-msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--blue), var(--teal));
+  color: white; border-bottom-right-radius: 4px;
+}
+.chat-msg .msg-action {
+  display: inline-block; margin-top: .35rem; padding: .25rem .6rem;
+  background: var(--blue-pale); color: var(--blue); border-radius: 6px;
+  font-size: .78rem; font-weight: 600; border-left: 3px solid var(--blue);
+}
+.chat-msg .msg-action.critical { background: var(--red-light); color: var(--red); border-left-color: var(--red); }
+.chat-msg .msg-action.high { background: var(--amber-light); color: var(--amber); border-left-color: var(--amber); }
+.chat-msg .msg-action.moderate { background: var(--blue-pale); color: var(--blue-mid); border-left-color: var(--blue-mid); }
+.chat-msg .msg-action.low { background: var(--teal-light); color: var(--teal); border-left-color: var(--teal); }
+.chat-msg .msg-dose {
+  display: block; margin-top: .3rem; padding: .3rem .6rem;
+  background: var(--gray-100); border-radius: 6px;
+  font-size: .8rem; font-weight: 600; color: var(--gray-900);
+}
+.chat-msg .msg-param {
+  display: inline-block; padding: 1px 6px; border-radius: 4px;
+  font-weight: 700; font-size: .82rem; margin: 0 2px;
+}
+.chat-msg .msg-param.good { background: var(--green-light); color: var(--green); }
+.chat-msg .msg-param.low { background: var(--amber-light); color: var(--amber); }
+.chat-msg .msg-param.high { background: var(--amber-light); color: var(--amber); }
+.chat-msg .msg-param.danger { background: var(--red-light); color: var(--red); }
+.chat-chips {
+  display: flex; gap: .3rem; flex-wrap: wrap; padding: .4rem 0;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.chat-chip {
+  padding: .35rem .7rem; background: var(--blue-pale); color: var(--blue);
+  border: 1.5px solid var(--blue-light); border-radius: 18px;
+  font-family: var(--font); font-size: .76rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap; min-height: 34px;
+  display: flex; align-items: center;
+  transition: all var(--transition); -webkit-tap-highlight-color: transparent;
+}
+.chat-chip:active { background: var(--blue); color: white; transform: scale(.96); }
+.chat-input-row {
+  display: flex; gap: .4rem; padding: .5rem 0 0;
+  border-top: 1px solid var(--gray-200);
+}
+.chat-input {
+  flex: 1; padding: .6rem .8rem; border: 1.5px solid var(--gray-200);
+  border-radius: 22px; font-family: var(--font); font-size: .9rem;
+  background: var(--white); min-height: 44px; outline: none;
+  transition: border-color var(--transition);
+}
+.chat-input:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(21,101,168,.12); }
+.chat-send {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--teal));
+  color: white; border: none; cursor: pointer;
+  font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition); -webkit-tap-highlight-color: transparent; flex-shrink: 0;
+}
+.chat-send:active { transform: scale(.9); }
+.chat-send:disabled { opacity: .4; }
+.chat-typing { font-size: .75rem; color: var(--gray-400); padding: .2rem .4rem; font-style: italic; }
+
 /* ═══════ SECTION DIVIDER ═══════ */
 .section-label {
   font-size: .68rem; font-weight: 700; text-transform: uppercase;
@@ -808,16 +892,23 @@ body {
 
   <!-- VIRTUAL POOL MAINTENANCE ASSISTANT -->
   <section id="pane-assistant" class="pane">
-    <div class="card" style="border-left:3px solid var(--teal);margin-bottom:.5rem">
-      <div class="card-header">
-        <span class="card-icon" style="font-size:1.5rem">&#129302;</span>
-        <div>
-          <div class="card-title" style="color:var(--teal)">Virtual Pool Maintenance Assistant</div>
-          <div class="card-subtitle">AI-powered recommendations for your 14,000 gal Dallas pool</div>
-        </div>
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+      <span style="font-size:1.4rem">&#129302;</span>
+      <div>
+        <div style="font-weight:700;font-size:.95rem;color:var(--teal)">PoolBot</div>
+        <div style="font-size:.68rem;color:var(--gray-600)">Virtual Pool Maintenance Assistant &bull; 14,000 gal &bull; Dallas</div>
+      </div>
+      <button class="btn btn-sm btn-secondary" style="margin-left:auto;font-size:.72rem;min-height:32px;padding:.25rem .55rem" onclick="PoolBot.showReport()">Full Report</button>
+    </div>
+    <div class="chat-container">
+      <div class="chat-thread" id="chat-thread"></div>
+      <div class="chat-chips" id="chat-chips"></div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" type="text" placeholder="Ask about your pool..." autocomplete="off" enterkeyhint="send">
+        <button class="chat-send" id="chat-send" onclick="PoolBot.send()">&#10148;</button>
       </div>
     </div>
-    <div id="assistant-content"></div>
+    <div id="assistant-content" style="display:none"></div>
   </section>
 
 </main>
@@ -2179,6 +2270,686 @@ const Assistant = {
   }
 };
 
+/* ═══════════════════════════════════════════════════════════
+   POOLBOT — Conversational Pool Assistant
+   ═══════════════════════════════════════════════════════════ */
+const PoolBot = {
+  messages: [],
+  initialized: false,
+
+  INTENTS: [
+    { id:'priority', patterns:['priority','first','what should i do','action','urgent','most important','next step','what now','to do'], handler:'handlePriority' },
+    { id:'overview', patterns:['overview','summary','how.*pool','status','overall','health','score','report','everything'], handler:'handleOverview' },
+    { id:'swim', patterns:['swim','safe to','can i','ok to','kids','ready'], handler:'handleSwim' },
+    { id:'shock', patterns:['shock','breakpoint','chloramine','combined','cc ','smell','eye','irritat'], handler:'handleShock' },
+    { id:'chlorine', patterns:['chlorine','fc ','free cl','sanitiz','bleach','liquid chlorine'], handler:'handleChlorine' },
+    { id:'ph', patterns:['ph','acid','phenol','alkaline','acidic','muriatic','soda ash'], handler:'handlePH' },
+    { id:'alkalinity', patterns:['alkalinity','ta ','total alk','baking soda','buffer'], handler:'handleTA' },
+    { id:'calcium', patterns:['calcium','hardness','ch ','scaling','scale','etch'], handler:'handleCH' },
+    { id:'cya', patterns:['cya','cyanuric','stabiliz','conditioner','uv','sun'], handler:'handleCYA' },
+    { id:'lsi', patterns:['lsi','langelier','saturation','balance','corrosiv','scaling index'], handler:'handleLSI' },
+    { id:'filter', patterns:['filter','psi','pressure','cartridge','clean filter','backwash'], handler:'handleFilter' },
+    { id:'pump', patterns:['pump','runtime','hours','run time','how long','motor'], handler:'handlePump' },
+    { id:'temp', patterns:['temp','temperature','hot','cold','warm','heat','water temp'], handler:'handleTemp' },
+    { id:'clarity', patterns:['clarity','clear','cloudy','haze','green','algae','murky','color'], handler:'handleClarity' },
+    { id:'dose', patterns:['dose','dosing','how much','add','amount','measure','chemical','pour'], handler:'handleDosing' },
+    { id:'lastdose', patterns:['last dose','recent dose','when did i','last add','last chemical','dose history'], handler:'handleLastDose' },
+    { id:'test', patterns:['test','when.*test','last test','should i test','how often','schedule','frequency'], handler:'handleTestSchedule' },
+    { id:'dallas', patterns:['dallas','texas','summer','winter','spring','fall','season','weather','heat','freeze'], handler:'handleDallas' },
+    { id:'reagent', patterns:['reagent','r-00','bottle','refill','expired','replace','taylor','k-2005'], handler:'handleReagent' },
+    { id:'help', patterns:['help','what can you','commands','options','how do i use','capabilities'], handler:'handleHelp' },
+  ],
+
+  init() {
+    if (this.initialized) return;
+    this.initialized = true;
+    const input = document.getElementById('chat-input');
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); }
+    });
+    this.renderChips();
+    this.addBotMessage(this.getGreeting());
+    this.scrollToBottom();
+  },
+
+  getGreeting() {
+    const last = Data.lastTest();
+    const days = Data.daysSince();
+    const hour = new Date().getHours();
+    const timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+    if (!last) {
+      return `${timeGreet}, Neil! I'm <b>PoolBot</b>, your virtual pool maintenance assistant.<br><br>I don't have any test data yet. Log your first Taylor K-2005 reading and I'll analyze your water chemistry and give you prioritized action steps.<br><br>Tap a suggestion below or ask me anything about your pool!`;
+    }
+
+    const analysis = Assistant.analyze(last, null, days, Data.getLogs());
+    let greeting = `${timeGreet}, Neil! `;
+
+    if (analysis.score >= 85) {
+      greeting += `Your pool is looking <b style="color:var(--green)">great</b> (score: ${analysis.score}/100). `;
+    } else if (analysis.score >= 65) {
+      greeting += `Your pool <b style="color:var(--amber)">needs some attention</b> (score: ${analysis.score}/100). `;
+    } else {
+      greeting += `Your pool has <b style="color:var(--red)">issues that need action</b> (score: ${analysis.score}/100). `;
+    }
+
+    if (days !== null) {
+      greeting += days === 0 ? 'Last test was today. ' : `Last test was ${days} day${days > 1 ? 's' : ''} ago. `;
+    }
+
+    if (analysis.actions.length > 0) {
+      greeting += `<br><br>You have <b>${analysis.actions.length} action item${analysis.actions.length > 1 ? 's' : ''}</b>. Ask me "what's my priority?" to get started!`;
+    } else {
+      greeting += '<br><br>All parameters look good. Ask me anything about your pool!';
+    }
+    return greeting;
+  },
+
+  CHIPS: [
+    "What's my priority?",
+    "Can I swim?",
+    "Do I need to shock?",
+    "How's my pH?",
+    "How much acid?",
+    "Check LSI balance",
+    "When should I test?",
+    "Dallas tips",
+  ],
+
+  renderChips() {
+    const el = document.getElementById('chat-chips');
+    el.innerHTML = this.CHIPS.map(c =>
+      `<button class="chat-chip" onclick="PoolBot.askChip('${c.replace(/'/g,"\\'")}')">${c}</button>`
+    ).join('');
+  },
+
+  askChip(text) {
+    document.getElementById('chat-input').value = text;
+    this.send();
+  },
+
+  send() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+
+    this.addUserMessage(text);
+    // Small delay to feel natural
+    setTimeout(() => {
+      const response = this.processInput(text);
+      this.addBotMessage(response);
+      this.scrollToBottom();
+    }, 300);
+  },
+
+  addUserMessage(text) {
+    this.messages.push({ role: 'user', text });
+    const thread = document.getElementById('chat-thread');
+    const div = document.createElement('div');
+    div.className = 'chat-msg user';
+    div.textContent = text;
+    thread.appendChild(div);
+    this.scrollToBottom();
+  },
+
+  addBotMessage(html) {
+    this.messages.push({ role: 'bot', text: html });
+    const thread = document.getElementById('chat-thread');
+    const div = document.createElement('div');
+    div.className = 'chat-msg bot';
+    div.innerHTML = `<div class="bot-label">&#129302; PoolBot</div>${html}`;
+    thread.appendChild(div);
+  },
+
+  scrollToBottom() {
+    const thread = document.getElementById('chat-thread');
+    setTimeout(() => { thread.scrollTop = thread.scrollHeight; }, 50);
+  },
+
+  processInput(text) {
+    const lower = text.toLowerCase().replace(/['']/g, "'").replace(/[?!.,]/g, '');
+
+    // Match intent
+    let bestMatch = null;
+    let bestScore = 0;
+    for (const intent of this.INTENTS) {
+      let score = 0;
+      for (const p of intent.patterns) {
+        if (lower.includes(p)) score += p.length;
+      }
+      if (score > bestScore) { bestScore = score; bestMatch = intent; }
+    }
+
+    if (bestMatch && bestScore > 0) {
+      return this[bestMatch.handler](lower);
+    }
+    return this.handleFallback(lower);
+  },
+
+  // ── Helper to get analysis + last test ──
+  _getData() {
+    const logs = Data.getLogs();
+    const last = logs.length ? logs[0] : null;
+    const days = Data.daysSince();
+    const prev = logs.length > 1 ? logs[1] : null;
+    const analysis = last ? Assistant.analyze(last, prev, days, logs) : null;
+    return { last, prev, days, logs, analysis };
+  },
+
+  _paramBadge(val, key) {
+    if (val == null) return '<span class="msg-param" style="background:var(--gray-100);color:var(--gray-400)">--</span>';
+    const s = status(val, key);
+    return `<span class="msg-param ${s}">${val}</span>`;
+  },
+
+  _actionCard(action) {
+    const urgencyLabels = { critical:'DO NOW', high:'SOON', moderate:'THIS WEEK', low:'WHEN READY' };
+    let html = `<div class="msg-action ${action.urgency}"><b>${urgencyLabels[action.urgency] || 'INFO'}:</b> ${action.title}</div>`;
+    if (action.dose) html += `<span class="msg-dose">&#128248; ${action.dose}</span>`;
+    return html;
+  },
+
+  _noData() {
+    return 'I don\'t have any test data yet. <b>Log a test first</b> and I\'ll be able to analyze your water!<br><br><button class="chat-chip" onclick="App.switchTab(\'log\')">&#128221; Go to Log</button>';
+  },
+
+  // ═══════ INTENT HANDLERS ═══════
+
+  handlePriority() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+    const a = d.analysis;
+
+    if (a.actions.length === 0) {
+      return `&#9989; <b>No action items!</b> All your parameters are within ideal ranges. Pool health score: <b style="color:var(--green)">${a.score}/100</b>.<br><br>Keep up your regular testing schedule and you're golden.`;
+    }
+
+    let html = `You have <b>${a.actions.length} action${a.actions.length > 1 ? 's' : ''}</b> (score: ${a.score}/100). Here they are in priority order:<br><br>`;
+    a.actions.forEach((action, i) => {
+      html += `<b>Step ${i + 1}:</b> ${action.detail.split('.')[0]}.<br>`;
+      html += this._actionCard(action);
+      html += '<br>';
+    });
+    html += '<br><i>Follow these in order — each step builds on the previous one.</i>';
+    return html;
+  },
+
+  handleOverview() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+    const a = d.analysis;
+
+    let html = `<b>Pool Health Score: ${a.score}/100</b> — ${a.healthLabel}<br><br>`;
+    html += '<b>Current Readings:</b><br>';
+    const params = [
+      { key:'fc', label:'Free Cl' }, { key:'cc', label:'Comb Cl' },
+      { key:'ph', label:'pH' }, { key:'ta', label:'Total Alk' },
+      { key:'ch', label:'Calcium' }, { key:'cya', label:'CYA' }
+    ];
+    params.forEach(p => {
+      html += `${p.label}: ${this._paramBadge(d.last[p.key], p.key)} `;
+    });
+
+    if (d.last.waterTemp) html += `<br>Water Temp: <b>${d.last.waterTemp}°F</b>`;
+    if (d.last.lsi != null) {
+      const lsiVal = parseFloat(d.last.lsi);
+      const lsiStatus = lsiVal < -0.3 ? 'Corrosive ⚠' : lsiVal > 0.3 ? 'Scaling ⚠' : 'Balanced ✓';
+      html += ` &bull; LSI: <b>${d.last.lsi}</b> (${lsiStatus})`;
+    }
+
+    html += `<br><br><b>${a.actions.length} action item${a.actions.length !== 1 ? 's' : ''}</b>`;
+    if (a.actions.length > 0) html += ' — ask "what\'s my priority?" for details.';
+    return html;
+  },
+
+  handleSwim() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+
+    const fc = d.last.fc, cc = d.last.cc, ph = d.last.ph;
+    const issues = [];
+    if (fc != null && fc < 1) issues.push(`FC is only ${fc} ppm (need at least 1 ppm for safe swimming)`);
+    if (fc != null && fc > 5) issues.push(`FC is ${fc} ppm (too high — wait until it drops below 5)`);
+    if (cc != null && cc > 0.5) issues.push(`Combined chlorine is ${cc} ppm (chloramines cause eye irritation)`);
+    if (ph != null && (ph < 7.0 || ph > 8.0)) issues.push(`pH is ${ph} (outside safe swimming range 7.2-7.8)`);
+
+    if (issues.length === 0 && fc != null && ph != null) {
+      return `&#9989; <b>Yes, it's safe to swim!</b><br><br>FC is ${this._paramBadge(fc,'fc')} and pH is ${this._paramBadge(ph,'ph')} — both within safe ranges. Enjoy the water!`;
+    } else if (issues.length === 0) {
+      return `I need FC and pH readings to determine swim safety. Your last test may not have included these — <b>run a quick FC + pH test</b> before swimming.`;
+    } else {
+      let html = `&#9888; <b>Not recommended to swim right now.</b><br><br>`;
+      issues.forEach(i => { html += `&#8226; ${i}<br>`; });
+      html += '<br>Fix these issues first. Ask me "what\'s my priority?" for the action plan.';
+      return html;
+    }
+  },
+
+  handleShock() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+
+    const fc = d.last.fc, cc = d.last.cc;
+    if (cc != null && cc > 0.5) {
+      const breakpoint = cc * 10;
+      const fcNeeded = breakpoint - (fc || 0);
+      const oz = Math.max(17, Math.round(fcNeeded * 17));
+      const gal = (oz / 128).toFixed(1);
+      let html = `<b>Yes, your pool needs a shock treatment.</b><br><br>`;
+      html += `Combined chlorine is ${this._paramBadge(cc,'cc')} — that's ${(cc / 0.5).toFixed(1)}x the limit. `;
+      html += `Breakpoint chlorination requires reaching <b>${breakpoint.toFixed(0)} ppm FC</b> (10x your CC).<br>`;
+      html += `<span class="msg-dose">&#128248; Add ~${oz} fl oz (~${gal} gal) of 10% liquid chlorine at dusk. Run pump overnight.</span><br><br>`;
+      if (d.last.ph != null && d.last.ph > 7.6) {
+        html += `&#9888; <b>Lower pH first!</b> Your pH is ${d.last.ph} — shock will be much more effective at pH 7.4 or below. Fix pH, wait 4-6 hours, then shock.`;
+      } else {
+        html += 'Your pH is in a good range, so the shock will be effective. Do it at dusk for best results.';
+      }
+      return html;
+    } else if (cc != null) {
+      return `&#9989; <b>No shock needed right now.</b> Combined chlorine is ${this._paramBadge(cc,'cc')} which is within the acceptable range (< 0.5 ppm). No chloramine issues detected.`;
+    } else {
+      return `I don't have a Combined Chlorine (CC) reading to evaluate. <b>Run the CC test</b> (R-0003, same sample as FC) to determine if you need to shock.`;
+    }
+  },
+
+  handleChlorine() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+
+    const fc = d.last.fc;
+    if (fc == null) return 'No Free Chlorine reading in your last test. Run the DPD test (R-0001 + R-0002) to check.';
+
+    const s = status(fc, 'fc');
+    let html = `Free Chlorine is ${this._paramBadge(fc,'fc')} (target: 2-4 ppm).<br><br>`;
+
+    if (fc < 2) {
+      const raise = 3 - fc;
+      const oz = Math.round(raise * 17);
+      html += `<b>FC is low.</b> `;
+      if (d.last.ph != null && d.last.ph > 7.8) html += `With pH at ${d.last.ph}, your chlorine is only ~22% effective — so it's performing even worse than the number suggests. `;
+      if (d.last.cya != null && d.last.cya < 30) html += `Low CYA (${d.last.cya}) means Dallas sun is destroying chlorine fast. `;
+      html += `<span class="msg-dose">&#128248; Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm.</span>`;
+    } else if (fc > 5) {
+      html += '<b>FC is high.</b> This will naturally decrease through sun exposure and usage. Avoid swimming until FC drops below 5 ppm.';
+    } else {
+      html += '&#9989; <b>FC is in the ideal range.</b> Good sanitizing level. ';
+      if (d.last.cya != null && d.last.cya >= 30 && d.last.cya <= 50) html += 'CYA is protecting it from UV. ';
+    }
+    return html;
+  },
+
+  handlePH(lower) {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+
+    const ph = d.last.ph;
+    if (ph == null) return 'No pH reading in your last test. Run the Phenol Red test (R-0004) to check.';
+
+    let html = `pH is ${this._paramBadge(ph,'ph')} (target: 7.2-7.6).<br><br>`;
+
+    if (ph > 7.6) {
+      const drops = Math.round((ph - 7.4) / 0.2);
+      const oz = drops * 13;
+      html += `<b>pH is high.</b> At pH ${ph}, chlorine effectiveness drops to ~${ph >= 8.0 ? '22' : ph >= 7.8 ? '35' : '45'}%.`;
+      html += `<span class="msg-dose">&#128248; Add ~${oz} fl oz muriatic acid (31.45%) to a bucket of pool water, pour at return jet.</span>`;
+      if (d.last.ta != null && d.last.ta > 120) html += `<br><br>High TA (${d.last.ta}) is likely buffering your pH high. The acid will help lower both.`;
+    } else if (ph < 7.2) {
+      const rises = Math.round((7.4 - ph) / 0.2);
+      const oz = rises * 6;
+      html += `<b>pH is low.</b> Acidic water corrodes equipment and irritates skin.`;
+      html += `<span class="msg-dose">&#128248; Add ~${oz} oz soda ash dissolved in warm water, pour at return jet.</span>`;
+    } else {
+      html += '&#9989; <b>pH is ideal.</b> Chlorine is working efficiently and the water is comfortable. No adjustment needed.';
+    }
+
+    if (lower && (lower.includes('how much acid') || lower.includes('how much muriatic'))) {
+      if (ph > 7.4) {
+        const drops2 = Math.round((ph - 7.4) / 0.2);
+        const oz2 = drops2 * 13;
+        html += `<br><br>For your 14,000 gallon pool: <b>${oz2} fl oz muriatic acid</b> to drop from ${ph} to ~7.4.`;
+      }
+    }
+    return html;
+  },
+
+  handleTA() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+    const ta = d.last.ta;
+    if (ta == null) return 'No Total Alkalinity reading. Run the TA test (R-0007 + R-0008 + R-0009, count drops x 10).';
+
+    let html = `Total Alkalinity is ${this._paramBadge(ta,'ta')} (target: 80-120 ppm).<br><br>`;
+    if (ta > 120) {
+      html += `<b>TA is high.</b> This causes pH to resist coming down and drift upward. Muriatic acid used for pH adjustment will also help lower TA. May need repeated treatments over several days.`;
+    } else if (ta < 80) {
+      const lbs = ((80 - ta) / 10 * 1.5).toFixed(1);
+      html += `<b>TA is low.</b> This causes pH to bounce around unpredictably.`;
+      html += `<span class="msg-dose">&#128248; Add ~${lbs} lbs baking soda, broadcast across deep end with pump running.</span>`;
+    } else {
+      html += '&#9989; <b>TA is ideal.</b> Good buffering capacity — pH should remain stable.';
+    }
+    return html;
+  },
+
+  handleCH() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+    const ch = d.last.ch;
+    if (ch == null) return 'No Calcium Hardness reading. Run the CH test (R-0010 + R-0011L + R-0012, drops x 10).';
+
+    let html = `Calcium Hardness is ${this._paramBadge(ch,'ch')} (target: 200-400 ppm).<br><br>`;
+    if (ch < 200) {
+      const lbs = ((200 - ch) / 10 * 1.25).toFixed(1);
+      html += `<b>CH is low.</b> Water is aggressive — it'll pull minerals from plaster and equipment.`;
+      html += `<span class="msg-dose">&#128248; Add ~${lbs} lbs calcium chloride. Pre-dissolve in bucket (caution: gets hot!), pour slowly at return.</span>`;
+    } else if (ch > 400) {
+      html += `<b>CH is high.</b> Risk of scale buildup on tile, heater, and plumbing. Only solution is partial drain and refill with fresh water (Dallas tap averages 100-200 ppm CH).`;
+    } else {
+      html += '&#9989; <b>CH is in range.</b> No scaling or etching risk.';
+    }
+    return html;
+  },
+
+  handleCYA() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+    const cya = d.last.cya;
+    if (cya == null) return 'No CYA reading. This is <b>critical for Dallas</b> — without CYA, sun destroys chlorine in 1-2 hours. Run the turbidity tube test (R-0013) ASAP.';
+
+    let html = `CYA (Stabilizer) is ${this._paramBadge(cya,'cya')} (target: 30-50 ppm).<br><br>`;
+    if (cya < 30) {
+      html += `<b>CYA is too low.</b> Dallas sun is destroying your chlorine fast. This explains rapid FC loss.`;
+      html += `<span class="msg-dose">&#128248; Add cyanuric acid stabilizer per product label to reach 40 ppm. Add through skimmer sock.</span>`;
+    } else if (cya > 70) {
+      const drain = Math.round((cya - 40) / cya * 100);
+      html += `<b>CYA is too high.</b> At ${cya} ppm, you need FC of at least ${(cya * 0.075).toFixed(1)} ppm to sanitize (7.5% ratio). No chemical lowers CYA.`;
+      html += `<span class="msg-dose">&#128248; Partial drain (~${drain}% of water) and refill to bring CYA to ~40 ppm. Switch to liquid chlorine (no stabilizer).</span>`;
+    } else {
+      html += '&#9989; <b>CYA is ideal.</b> Good UV protection for your chlorine. Keep using liquid chlorine to avoid pushing CYA higher.';
+    }
+    return html;
+  },
+
+  handleLSI() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+
+    const lsi = d.last.lsi;
+    if (lsi == null) {
+      return 'I need water temperature, pH, TA, and CH to calculate LSI. Make sure to record all of these in your next test log. The app will auto-calculate LSI for you.';
+    }
+    const val = parseFloat(lsi);
+    let html = `<b>Langelier Saturation Index: ${lsi}</b><br><br>`;
+    if (val < -0.3) {
+      html += `&#9888; <b>Water is corrosive</b> (LSI below -0.3). Aggressive water etches plaster, corrodes metal, and damages equipment. Raise pH, TA, or CH to bring LSI toward zero.`;
+    } else if (val > 0.3) {
+      html += `&#9888; <b>Water is scale-forming</b> (LSI above +0.3). Minerals are depositing on surfaces, clogging heaters, and creating white buildup. Lower pH or TA to bring LSI toward zero.`;
+    } else {
+      html += `&#9989; <b>Water is balanced!</b> LSI between -0.3 and +0.3 means your water is neither corrosive nor scaling. Perfect for equipment longevity and surface protection.`;
+    }
+    html += `<br><br><i>LSI factors: pH ${d.last.ph || '--'}, TA ${d.last.ta || '--'}, CH ${d.last.ch || '--'}, Temp ${d.last.waterTemp || '--'}°F</i>`;
+    return html;
+  },
+
+  handleFilter() {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+    const psi = d.last.filterPsi;
+    if (psi == null) return 'No filter pressure reading recorded. Add PSI to your next test log — it helps track when your cartridge needs cleaning. Clean baseline is typically 8-12 PSI.';
+
+    let html = `Filter pressure is <b>${psi} PSI</b>.<br><br>`;
+    if (psi > 25) {
+      html += `&#9888; <b>Pressure is high!</b> Your cartridge filter likely needs cleaning. Rinse with a garden hose, spray between pleats. If pressure doesn't drop, consider a deep acid soak.`;
+    } else if (psi > 20) {
+      html += `Filter pressure is getting elevated. Plan to clean your cartridge soon. Normal clean pressure is 8-12 PSI.`;
+    } else {
+      html += `&#9989; Filter pressure is normal. Clean baseline is typically 8-12 PSI. Clean when it reaches 8-10 PSI above your clean baseline.`;
+    }
+    return html;
+  },
+
+  handlePump() {
+    const d = this._getData();
+    const month = new Date().getMonth();
+    const isSummer = month >= 5 && month <= 8;
+    const pumpHrs = d.last ? d.last.pumpHours : null;
+
+    let html = '';
+    if (pumpHrs) html += `Your pump is running <b>${pumpHrs} hours/day</b>.<br><br>`;
+
+    if (isSummer) {
+      html += `&#9728; <b>Summer in Dallas</b> — recommended pump runtime is <b>10-12 hours/day</b>. `;
+      html += 'High heat increases chlorine demand and algae risk. Run pump during peak sun hours (10am-4pm) for best filtration.';
+      if (pumpHrs && pumpHrs < 10) html += `<br><br>&#9888; At ${pumpHrs} hrs, you may want to increase runtime to at least 10 hours.`;
+    } else if (month >= 2 && month <= 4) {
+      html += `&#127793; <b>Spring in Dallas</b> — recommended runtime is <b>8-10 hours/day</b>. Increase as temperatures rise.`;
+    } else if (month >= 9 && month <= 10) {
+      html += `&#127810; <b>Fall in Dallas</b> — <b>6-8 hours/day</b> is usually sufficient. Reduce as temperatures drop.`;
+    } else {
+      html += `&#10052; <b>Winter in Dallas</b> — <b>4-6 hours/day</b> minimum. <b>Run pump continuously when temps drop below 35°F</b> to prevent freeze damage.`;
+    }
+    return html;
+  },
+
+  handleTemp() {
+    const d = this._getData();
+    if (!d.last || d.last.waterTemp == null) return 'No water temperature recorded. Add it to your next test log — temperature affects chlorine demand and LSI calculation.';
+
+    const temp = d.last.waterTemp;
+    let html = `Water temperature is <b>${temp}°F</b>.<br><br>`;
+    if (temp > 85) {
+      html += '&#9888; <b>Warm water</b> increases chlorine consumption, algae growth, and bacterial risk. Target FC of 3-4 ppm and test more frequently (every 2-3 days).';
+    } else if (temp > 75) {
+      html += 'Good swimming temperature. Standard FC target of 2-4 ppm. Test 2-3x per week.';
+    } else if (temp < 60) {
+      html += 'Cool water reduces chlorine demand. FC of 2 ppm is sufficient. Weekly testing is OK.';
+    } else {
+      html += 'Moderate temperature. Standard maintenance applies. Test 2-3x per week.';
+    }
+    return html;
+  },
+
+  handleClarity() {
+    const d = this._getData();
+    const clarity = d.last ? d.last.clarity : null;
+
+    if (!clarity || clarity === 'crystal') {
+      if (clarity === 'crystal') return '&#9989; <b>Water clarity is crystal clear!</b> That means good filtration, adequate chlorine, and balanced chemistry. Nice work!';
+      return 'No clarity reading recorded. Add it to your next log. If your water looks cloudy or green, I can help diagnose the cause.';
+    }
+
+    let html = `Water clarity: <b>${clarity}</b>.<br><br>`;
+    if (clarity === 'green') {
+      html += '&#9888; <b>Green water = algae bloom.</b> Common causes: FC too low, CYA too high, or missed shock treatment.<br>';
+      html += '&#8226; Brush all surfaces thoroughly<br>';
+      html += '&#8226; Shock to 15+ ppm FC at dusk<br>';
+      html += '&#8226; Run pump 24 hours<br>';
+      html += '&#8226; Retest and re-shock if still green after 24 hrs';
+    } else if (clarity === 'cloudy') {
+      html += '<b>Cloudy water</b> is usually caused by: high CC (chloramines), high pH, high calcium, inadequate filtration, or early algae.<br><br>';
+      if (d.last && d.last.cc > 0.5) html += `Your CC is ${d.last.cc} — chloramines are likely the culprit. Shock treatment needed.<br>`;
+      if (d.last && d.last.ph > 7.8) html += `pH is ${d.last.ph} — high pH causes cloudiness. Lower pH first.<br>`;
+      html += 'Also check: Is filter pressure high? Is pump running enough hours?';
+    } else {
+      html += '<b>Slight haze</b> could be early sign of a chemistry imbalance. Check FC, pH, and filter pressure. Usually resolved by bringing chemistry in line and running the pump a few extra hours.';
+    }
+    return html;
+  },
+
+  handleDosing(lower) {
+    const d = this._getData();
+    if (!d.last) return this._noData();
+
+    if (lower.includes('how much acid') || lower.includes('how much muriatic')) return this.handlePH(lower);
+    if (lower.includes('how much chlorine') || lower.includes('how much bleach')) return this.handleChlorine();
+    if (lower.includes('how much baking') || lower.includes('how much soda')) return this.handleTA();
+
+    // Generic dosing overview from the assistant
+    const a = d.analysis;
+    if (a.actions.length === 0) return '&#9989; No dosing needed right now! All parameters are in range.';
+
+    let html = 'Here are the chemicals you should add based on your current readings:<br><br>';
+    a.actions.forEach(action => {
+      if (action.dose) {
+        html += this._actionCard(action) + '<br>';
+      }
+    });
+    html += '<br>Ask me about a specific chemical (like "how much acid?") for details.';
+    return html;
+  },
+
+  handleLastDose() {
+    const doses = Data.getDosing ? Data.getDosing() : [];
+    if (doses.length === 0) return 'No dosing history recorded yet. Use the <b>Dose tab</b> to log when you add chemicals — it helps track what you\'ve used and when.';
+
+    let html = '<b>Recent Doses:</b><br><br>';
+    doses.slice(0, 5).forEach(dose => {
+      const ago = this._timeAgo(dose.date);
+      html += `&#8226; <b>${dose.chemical}</b> — ${dose.amount} ${dose.unit} (${ago})<br>`;
+    });
+    return html;
+  },
+
+  handleTestSchedule() {
+    const d = this._getData();
+    const days = d.days;
+    const month = new Date().getMonth();
+    const isSummer = month >= 5 && month <= 8;
+
+    let html = '<b>Recommended Testing Schedule for Dallas:</b><br><br>';
+    html += `&#8226; <b>2-3x / week:</b> FC + pH (quick check)<br>`;
+    html += `&#8226; <b>Weekly:</b> FC, CC, pH, Total Alkalinity<br>`;
+    html += `&#8226; <b>Monthly:</b> All tests + CYA + Calcium Hardness<br>`;
+    html += `&#8226; <b>After storms:</b> FC, pH, TA (rain dilutes everything)<br><br>`;
+
+    if (days !== null) {
+      if (days === 0) html += '&#9989; You tested today — you\'re on track!';
+      else if (days <= 2) html += `Last test was ${days} day${days > 1 ? 's' : ''} ago. ${isSummer ? 'In summer, try to test every 2-3 days.' : 'You\'re on schedule.'}`;
+      else if (days <= 5) html += `&#9888; It's been ${days} days. Time to run at least a quick FC + pH test!`;
+      else html += `&#9888; <b>It's been ${days} days!</b> Your water chemistry could have changed significantly. Run a full panel ASAP.`;
+    }
+    return html;
+  },
+
+  handleDallas() {
+    const month = new Date().getMonth();
+    let html = '';
+    if (month >= 5 && month <= 8) {
+      html = `<b>&#9728; Dallas Summer Mode</b><br><br>`;
+      html += `&#8226; 100°F+ heat accelerates chlorine burn-off — target <b>FC 3-4 ppm</b><br>`;
+      html += `&#8226; CYA <b>must be 30-50</b> to protect chlorine from UV<br>`;
+      html += `&#8226; Run pump <b>10-12 hours/day</b> during peak sun<br>`;
+      html += `&#8226; Test <b>2-3x per week</b> minimum<br>`;
+      html += `&#8226; Shock every Sunday evening<br>`;
+      html += `&#8226; Monitor for algae after rain — test immediately<br>`;
+      html += `&#8226; Water evaporation is high — check water level weekly`;
+    } else if (month >= 2 && month <= 4) {
+      html = `<b>&#127793; Dallas Spring</b><br><br>`;
+      html += `&#8226; Time for spring startup — full panel test + lab verification<br>`;
+      html += `&#8226; Deep clean cartridge filter<br>`;
+      html += `&#8226; Balance TA and pH first, then bring FC to 3 ppm<br>`;
+      html += `&#8226; Check CYA — may have diluted from winter rain<br>`;
+      html += `&#8226; Inspect all equipment (pump lid, O-rings, skimmer baskets)`;
+    } else if (month >= 9 && month <= 10) {
+      html = `<b>&#127810; Dallas Fall</b><br><br>`;
+      html += `&#8226; Reduce pump to 6-8 hours as temperatures drop<br>`;
+      html += `&#8226; Continue weekly testing<br>`;
+      html += `&#8226; Consider phosphate remover<br>`;
+      html += `&#8226; Acid soak cartridge filter before winter<br>`;
+      html += `&#8226; Leaf debris increases — skim daily`;
+    } else {
+      html = `<b>&#10052; Dallas Winter</b><br><br>`;
+      html += `&#8226; <b>Run pump when temps drop below 35°F</b> to prevent freeze damage<br>`;
+      html += `&#8226; Maintain FC at 2 ppm minimum<br>`;
+      html += `&#8226; Test monthly minimum<br>`;
+      html += `&#8226; Keep water level normal to protect skimmer<br>`;
+      html += `&#8226; Dallas doesn't require full winterization but protect equipment`;
+    }
+    return html;
+  },
+
+  handleReagent() {
+    const reagents = Data.getReagents ? Data.getReagents() : null;
+    if (!reagents) return 'No reagent tracking data. You can set up your reagent inventory in the <b>Test tab</b> to track bottle levels.';
+
+    let html = '<b>Taylor K-2005 Reagent Status:</b><br><br>';
+    const names = {
+      'R-0001':'DPD #1','R-0002':'DPD #2','R-0003':'DPD #3','R-0004':'Phenol Red',
+      'R-0007':'Thiosulfate','R-0008':'TA Indicator','R-0009':'Sulfuric Acid',
+      'R-0010':'Calcium Buffer','R-0011L':'Calcium Ind.','R-0012':'Hardness Reagent','R-0013':'CYA Reagent'
+    };
+    let lowCount = 0;
+    for (const [code, name] of Object.entries(names)) {
+      if (reagents[code] != null) {
+        const pct = Math.round((reagents[code] / 240) * 100); // ~240 drops per bottle
+        const icon = pct > 30 ? '&#9989;' : pct > 10 ? '&#9888;' : '&#128680;';
+        if (pct <= 30) lowCount++;
+        html += `${icon} <b>${code}</b> (${name}): ~${pct}% remaining<br>`;
+      }
+    }
+    if (lowCount > 0) html += `<br>&#9888; <b>${lowCount} reagent${lowCount > 1 ? 's are' : ' is'} getting low.</b> Replace annually for accuracy.`;
+    else html += '<br>All reagents looking good! Replace annually even if not empty — expired reagents give false readings.';
+    return html;
+  },
+
+  handleHelp() {
+    return `<b>I can help you with:</b><br><br>` +
+      `&#128167; <b>Water chemistry</b> — "How's my pH?", "Check my chlorine", "What about my CYA?"<br>` +
+      `&#9888; <b>Actions</b> — "What's my priority?", "How much acid do I need?", "Do I need to shock?"<br>` +
+      `&#127946; <b>Swimming</b> — "Is it safe to swim?"<br>` +
+      `&#9878; <b>Equipment</b> — "Check my filter", "How long should I run my pump?"<br>` +
+      `&#127777; <b>Conditions</b> — "Check water temp", "Why is my pool cloudy?"<br>` +
+      `&#128202; <b>History</b> — "When did I last dose?", "When should I test?"<br>` +
+      `&#9878; <b>Balance</b> — "Check my LSI", "Is my water balanced?"<br>` +
+      `&#127774; <b>Seasonal</b> — "Dallas tips", "Summer advice"<br>` +
+      `&#128300; <b>Reagents</b> — "Check my reagents"<br><br>` +
+      `Tap "Full Report" for the complete analysis dashboard.`;
+  },
+
+  handleFallback(lower) {
+    // Try to be helpful even if we can't match
+    const d = this._getData();
+    if (!d.last) return this._noData();
+
+    return `I'm not sure I understood that. Here are some things you can ask me:<br><br>` +
+      `<div class="chat-chips" style="padding:0">` +
+      this.CHIPS.map(c => `<button class="chat-chip" onclick="PoolBot.askChip('${c.replace(/'/g,"\\'")}')">${c}</button>`).join('') +
+      `</div><br>Or tap "Full Report" for the complete analysis.`;
+  },
+
+  _timeAgo(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - d;
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffDays === 0) return 'today';
+    if (diffDays === 1) return 'yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays/7) > 1 ? 's' : ''} ago`;
+    return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays/30) > 1 ? 's' : ''} ago`;
+  },
+
+  showReport() {
+    const el = document.getElementById('assistant-content');
+    const chatContainer = document.querySelector('#pane-assistant .chat-container');
+    const chipContainer = document.getElementById('chat-chips');
+
+    if (el.style.display === 'none') {
+      el.style.display = 'block';
+      chatContainer.style.display = 'none';
+      chipContainer.style.display = 'none';
+      Assistant.render();
+      document.querySelector('#pane-assistant .btn-sm').textContent = 'Back to Chat';
+    } else {
+      el.style.display = 'none';
+      chatContainer.style.display = 'flex';
+      chipContainer.style.display = 'flex';
+      document.querySelector('#pane-assistant .btn-sm').textContent = 'Full Report';
+    }
+  }
+};
+
 const Dashboard = {
   render() {
     const last = Data.lastTest();
@@ -2320,7 +3091,7 @@ const App = {
     if (name === 'schedule') Schedule.render();
     if (name === 'test') Taylor.render();
     if (name === 'dose') Dosing.render();
-    if (name === 'assistant') Assistant.render();
+    if (name === 'assistant') { Assistant.render(); PoolBot.init(); }
     window.scrollTo(0, 0);
   },
 
