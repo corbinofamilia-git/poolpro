@@ -777,6 +777,7 @@ body {
             <option value="Phosphate Remover">Phosphate Remover</option>
             <option value="Enzyme Treatment">Enzyme Treatment</option>
             <option value="Cal-Hypo Shock">Cal-Hypo Shock</option>
+            <option value="3&quot; Chlorine Tabs (Trichlor)">3" Chlorine Tabs (Trichlor)</option>
           </select>
         </div>
         <div class="fg"><label>Amount</label><input type="number" id="d-amount" step="0.5" min="0" placeholder="qty" inputmode="decimal"></div>
@@ -787,6 +788,7 @@ body {
             <option value="oz">oz</option>
             <option value="lbs">lbs</option>
             <option value="gal">gal</option>
+            <option value="tabs">tabs</option>
           </select>
         </div>
         <div class="fg fg-full"><label>Reason (optional)</label><input type="text" id="d-reason" placeholder="e.g., to raise pH, weekly shock, etc."></div>
@@ -957,6 +959,7 @@ const CHEMICALS = [
   { name: 'Phosphate Remover', unit: 'fl oz', color: '#0D7363' },
   { name: 'Enzyme Treatment', unit: 'fl oz', color: '#9A6700' },
   { name: 'Cal-Hypo Shock', unit: 'lbs', color: '#C0392B' },
+  { name: '3" Chlorine Tabs (Trichlor)', unit: 'tabs', color: '#1ABC9C' },
 ];
 
 function calcLSI(temp, ph, ta, ch, tds) {
@@ -1349,6 +1352,10 @@ const Calc = {
         const cal = (need * 2.8).toFixed(1);
         html += `<div class="calc-result"><strong>Liquid (10%):</strong> <span class="dose">${liq} fl oz</span> (${(liq/128).toFixed(2)} gal)</div>`;
         html += `<div class="calc-result"><strong>Cal-Hypo (65%):</strong> <span class="dose">${cal} oz</span></div>`;
+        const tabs = (need / 5.5);
+        if (tabs >= 0.4) {
+          html += `<div class="calc-result"><strong>3" Trichlor Tab:</strong> <span class="dose">${tabs < 1 ? '½ tab' : tabs.toFixed(1) + ' tab' + (tabs >= 1.5 ? 's' : '')}</span> <span style="font-size:.72rem;color:#888">(~8 oz/tab, 90% avail Cl · adds ~${(tabs * 2.5).toFixed(1)} ppm CYA)</span></div>`;
+        }
       } else {
         html += '<div class="calc-result ok"><span class="dose">No addition needed</span> — at or above target</div>';
       }
@@ -1405,7 +1412,7 @@ const Calc = {
       } else if (cya > 80) {
         html += `<div class="calc-result needs-lower"><strong>CYA dangerously high (${cya})!</strong> <span class="dose">Partial drain required.</span></div>`;
       } else if (cya > 50) {
-        html += `<div class="calc-result needs-lower"><strong>CYA getting high (${cya}).</strong> <span class="dose">Switch to liquid chlorine.</span></div>`;
+        html += `<div class="calc-result needs-lower"><strong>CYA getting high (${cya}).</strong> <span class="dose">Switch to liquid chlorine. Stop using trichlor tabs — each tab adds ~2.5 ppm CYA.</span></div>`;
       } else {
         html += '<div class="calc-result ok"><span class="dose">In range (30–50 ppm)</span></div>';
       }
@@ -2064,7 +2071,7 @@ const Assistant = {
             urgency: 'critical',
             title: 'Raise Free Chlorine immediately',
             detail: `FC is ${fc} ppm — critically low. Pool is not sanitized. Risk of algae bloom and bacteria growth.`,
-            dose: `Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm. Walk the perimeter while pouring.`
+            dose: `Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm. Walk the perimeter while pouring.${(cya == null || cya <= 40) ? ' Or use ' + (raise/5.5 < 1 ? '½ a 3" trichlor tab' : (raise/5.5).toFixed(1) + ' tabs') + ' in a floater (adds CYA too).' : ''}`
           });
         }
         paramNotes.fc = (paramNotes.fc || '') + ` FC ${fc} ppm is dangerously low. Pool is essentially unsanitized.`;
@@ -2077,7 +2084,7 @@ const Assistant = {
             urgency: 'high',
             title: 'Raise Free Chlorine',
             detail: `FC is ${fc} ppm — below the 2-4 target. Sanitizing power is insufficient, especially in Dallas heat.${ph != null && ph > 7.6 ? ' High pH is further reducing chlorine effectiveness.' : ''}`,
-            dose: `Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm.`
+            dose: `Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm.${(cya == null || cya <= 40) ? ' Or use ' + (raise/5.5 < 1 ? '½ a 3" trichlor tab' : (raise/5.5).toFixed(1) + ' tabs') + ' in a floater.' : ''}`
           });
         }
         paramNotes.fc = (paramNotes.fc || '') + ` FC ${fc} ppm is low. Needs to be raised to at least 2 ppm (ideally 3).`;
@@ -2282,7 +2289,7 @@ const PoolBot = {
     { id:'overview', patterns:['overview','summary','how.*pool','status','overall','health','score','report','everything'], handler:'handleOverview' },
     { id:'swim', patterns:['swim','safe to','can i','ok to','kids','ready'], handler:'handleSwim' },
     { id:'shock', patterns:['shock','breakpoint','chloramine','combined','cc ','smell','eye','irritat'], handler:'handleShock' },
-    { id:'chlorine', patterns:['chlorine','fc ','free cl','sanitiz','bleach','liquid chlorine'], handler:'handleChlorine' },
+    { id:'chlorine', patterns:['chlorine','fc ','free cl','sanitiz','bleach','liquid chlorine','trichlor','3 inch','3"','tab ','tabs ','puck'], handler:'handleChlorine' },
     { id:'ph', patterns:['ph','acid','phenol','alkaline','acidic','muriatic','soda ash'], handler:'handlePH' },
     { id:'alkalinity', patterns:['alkalinity','ta ','total alk','baking soda','buffer'], handler:'handleTA' },
     { id:'calcium', patterns:['calcium','hardness','ch ','scaling','scale','etch'], handler:'handleCH' },
@@ -2570,6 +2577,11 @@ const PoolBot = {
       if (d.last.ph != null && d.last.ph > 7.8) html += `With pH at ${d.last.ph}, your chlorine is only ~22% effective — so it's performing even worse than the number suggests. `;
       if (d.last.cya != null && d.last.cya < 30) html += `Low CYA (${d.last.cya}) means Dallas sun is destroying chlorine fast. `;
       html += `<span class="msg-dose">&#128248; Add ~${oz} fl oz of 10% liquid chlorine to reach 3 ppm.</span>`;
+      const tabs = raise / 5.5;
+      if (tabs >= 0.4) {
+        const cyaNote = (d.last.cya != null && d.last.cya > 40) ? ' ⚠️ Your CYA is already ' + d.last.cya + ' — use liquid chlorine instead to avoid raising CYA further.' : ' (adds ~' + (tabs * 2.5).toFixed(1) + ' ppm CYA)';
+        html += `<br><span class="msg-dose">&#128248; Or use ${tabs < 1 ? '½ a 3" trichlor tab' : tabs.toFixed(1) + ' tab' + (tabs >= 1.5 ? 's' : '')} in a floater/skimmer.${cyaNote}</span>`;
+      }
     } else if (fc > 5) {
       html += '<b>FC is high.</b> This will naturally decrease through sun exposure and usage. Avoid swimming until FC drops below 5 ppm.';
     } else {
